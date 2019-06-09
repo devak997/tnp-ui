@@ -31,9 +31,12 @@ class App extends React.Component {
   };
 
   FileUploadHandler = files => {
-    const data = new FormData();
-    data.append("files", files);
-    tnpbase.post("/students/add", data, {
+    const formData = new FormData()
+    Object.keys(files).forEach((key) => {
+      const file = files[key]
+      formData.append(key, new Blob([file], { type: file.type }), file.name || 'file')
+    })
+    tnpbase.post("/students/add", formData, {
       onUploadProgress: ProgressEvent => {
         this.setState({
           loaded: (ProgressEvent.loaded / ProgressEvent.total) * 100
