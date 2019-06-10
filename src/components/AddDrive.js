@@ -20,15 +20,26 @@ class AddDrive extends React.Component {
       round5: "",
       round6: "",
       round7: "",
-      round8: "",
-      round9: "",
-      round10: ""
+      round8: ""
     }
   };
 
-  submitForm = () => {
+  submitForm = e => {
+    e.preventDefault();
+    const roundNames = [];
+    for (let i = 0; i < this.state.noOfRounds; i++) {
+      roundNames.push(this.state.selectedRounds[`round${i + 1}`]);
+    }
+    const data = {
+      companyName: this.state.companyName,
+      date: this.state.date.toLocaleDateString(),
+      noOfRounds: this.state.noOfRounds,
+      type: this.state.onCampus ? "ON Campus" : "OFF Campus",
+      remarks: this.state.remarks,
+      selectedRounds: roundNames
+    };
     tnpbase
-      .post("/drives/add", { data: this.state })
+      .post("/drives/add", { data })
       .then(() => console.log("data submitted"))
       .catch(err => console.log(err));
   };
@@ -40,7 +51,7 @@ class AddDrive extends React.Component {
     }
     return tempArray.map((num, i) => {
       return (
-        <div className="field" key={i}>
+        <div className="required field" key={i}>
           <label>{`Round ${num + 1}`}</label>
           <select
             className="ui dropdown fluid"
@@ -67,43 +78,56 @@ class AddDrive extends React.Component {
   };
 
   render() {
-    console.log(this.state);
     return (
       <div className="ui container">
         <form className="ui form">
           <h2 className="ui dividing header">Add Drive</h2>
-          <div className="field">
+          <div className="required field">
             <label>Company Name</label>
-            <input
-              type="text"
-              placeholder="Company Name"
-              value={this.state.companyName}
-              onChange={e => this.setState({ companyName: e.target.value })}
-            />
+            <div className="ui left icon input">
+              <input
+                type="text"
+                placeholder="Company Name"
+                value={this.state.companyName}
+                onChange={e =>
+                  this.setState({ companyName: e.target.value.toUpperCase() })
+                }
+              />
+              <i className="briefcase icon" />
+            </div>
           </div>
-          <div className="field">
-            <label>Drive Date</label>
+          <div className="required field">
+            <label>
+              <i className="calendar alternate outline icon" />
+              Drive Date
+            </label>
             <DatePicker
               onChange={date => this.setState({ date: date })}
               dateFormat="dd/MM/yyyy"
               selected={this.state.date}
             />
           </div>
-          <div className="field">
+          <div className="required field">
             <label>No. of rounds</label>
-            <input
-              type="number"
-              value={this.state.noOfRounds}
-              min={0}
-              max={10}
-              onChange={e => this.setState({ noOfRounds: e.target.value })}
-            />
+            <div className="ui left icon input">
+              <input
+                type="number"
+                value={this.state.noOfRounds}
+                min={2}
+                max={8}
+                onChange={e => this.setState({ noOfRounds: e.target.value })}
+              />
+              <i className="spinner icon" />
+            </div>
           </div>
           <h4 className="ui dividing header">Select Rounds</h4>
           <div
-            className={`${converter.toWords(
-              this.state.noOfRounds
-            )} wide fields`}
+            className={`${
+              // @ts-ignore
+              this.state.noOfRounds === ""
+                ? ""
+                : converter.toWords(this.state.noOfRounds)
+            } wide fields`}
           >
             {this.displaySelectRounds()}
           </div>
@@ -112,7 +136,7 @@ class AddDrive extends React.Component {
               <div
                 className="ui toggle checkbox"
                 onClick={() =>
-                  this.setState({ isChecked: !this.state.isChecked })
+                  this.setState({ onCampus: !this.state.onCampus })
                 }
               >
                 <input
@@ -130,12 +154,15 @@ class AddDrive extends React.Component {
           </div>
           <div className="field">
             <label>Remarks</label>
-            <input
-              type="text"
-              placeholder="Remarks"
-              value={this.state.remarks}
-              onChange={e => this.setState({ remarks: e.target.value })}
-            />
+            <div className="ui left icon input">
+              <input
+                type="text"
+                placeholder="Remarks"
+                value={this.state.remarks}
+                onChange={e => this.setState({ remarks: e.target.value })}
+              />
+              <i className="exclamation icon" />
+            </div>
           </div>
           <button
             className="large blue ui labeled icon button"

@@ -21,7 +21,10 @@ import TestPerformaceDisplay from "./components/TestPerformace";
 
 import tnpbase from "./api/tnpbase";
 
+import { FetchRounds } from "./actions";
+
 import "./App.css";
+import { connect } from "react-redux";
 
 class App extends React.Component {
   state = { sidebarVisible: false, loading: 0 };
@@ -45,7 +48,9 @@ class App extends React.Component {
     }).then().catch(err => console.log(err))
   };
 
-  
+  componentDidMount = () => {
+    this.props.FetchRounds();
+  }
 
   render() {
     return (
@@ -95,4 +100,4 @@ class App extends React.Component {
 }
 
 
-export default (App);
+export default connect(null, {FetchRounds})(App);
