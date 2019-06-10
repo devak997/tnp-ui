@@ -4,7 +4,7 @@ import { FetchRounds } from "../actions/";
 import tnpbase from "../api/tnpbase";
 
 class RoundsConfig extends React.Component {
-  state = { showForm: false, round: null };
+  state = { showForm: false, round: "" };
 
   addRound = () => {
     tnpbase
@@ -58,9 +58,8 @@ class RoundsConfig extends React.Component {
     if (this.props.rounds.length === 0) {
       return (
         <tr>
-          <td rowSpan={3}>
+          <td colSpan={3} style={{ display: "" }}>
             <h3 style={{ textAlign: "center", padding: "10px" }}>
-              {" "}
               It's lonely here
             </h3>
           </td>
@@ -99,7 +98,7 @@ class RoundsConfig extends React.Component {
         >
           Add Round
         </button>
-        <table className="ui blue table">
+        <table className="ui copmact blue small table table-container">
           <thead>
             <tr>
               <th>Round No.</th>
