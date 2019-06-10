@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { reducer as formReducer } from "redux-form";
 
 const HandleFileReducer = (state = [], action) => {
   switch (action.type) {
@@ -21,8 +22,19 @@ const SetRefReducer = (state = null, action) => {
   }
 };
 
+const FetchRoundsReducer = (state = [], action) => {
+  switch (action.type) {
+    case "FETCH_ROUNDS":
+      return action.payload;
+    default:
+      return state;
+  }
+};
 
 export default combineReducers({
   selectedFiles: HandleFileReducer,
-  inputRef: SetRefReducer
+  inputRef: SetRefReducer,
+  roundsList: FetchRoundsReducer,
+  form: formReducer
+  
 });

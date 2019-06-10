@@ -36,7 +36,7 @@ class App extends React.Component {
       const file = files[key]
       formData.append(key, new Blob([file], { type: file.type }), file.name || 'file')
     })
-    tnpbase.post("/students/add", formData, {
+    tnpbase.post("/students/add/", formData, {
       onUploadProgress: ProgressEvent => {
         this.setState({
           loaded: (ProgressEvent.loaded / ProgressEvent.total) * 100
@@ -44,6 +44,8 @@ class App extends React.Component {
       }
     }).then().catch(err => console.log(err))
   };
+
+  
 
   render() {
     return (
@@ -92,4 +94,5 @@ class App extends React.Component {
   }
 }
 
-export default App;
+
+export default (App);

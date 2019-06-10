@@ -1,7 +1,24 @@
 import React from "react";
+import { connect } from "react-redux";
+import { FetchRounds } from "../actions/";
+import tnpbase from "../api/tnpbase";
 
 class RoundsConfig extends React.Component {
-  state = { showForm: false };
+  state = { showForm: false, round: null };
+
+  addRound = () => {
+    tnpbase
+      .put("/round/add", { data: this.state.round })
+      .then(() => this.setState({ showForm: false }))
+      .catch(err => console.log(err));
+  };
+
+  deleteRound = data => {
+    tnpbase
+      .delete("/rounds.delete", { data })
+      .then(() => this.props.FetchPosts())
+      .catch(err => console.log(err));
+  };
 
   formDisplay = () =>
     this.state.showForm ? (
@@ -13,12 +30,17 @@ class RoundsConfig extends React.Component {
         </td>
         <td>
           <div className="ui input">
-            <input type="text" placeholder="Round Name" />
+            <input
+              type="text"
+              placeholder="Round Name"
+              value={this.state.round}
+              onChange={e => this.setState({ round: e.target.value })}
+            />
           </div>
         </td>
         <td>
           <div className="ui basic icon buttons">
-            <button className="ui button" onClick={() => console.log("Done")}>
+            <button className="ui button" onClick={this.addRound}>
               <i className="check icon" />
             </button>
             <button
@@ -31,6 +53,41 @@ class RoundsConfig extends React.Component {
         </td>
       </tr>
     ) : null;
+
+  displayRounds = () => {
+    if (this.props.rounds.length === 0) {
+      return (
+        <tr>
+          <td rowSpan={3}>
+            <h3 style={{ textAlign: "center", padding: "10px" }}>
+              {" "}
+              It's lonely here
+            </h3>
+          </td>
+        </tr>
+      );
+    }
+    return this.props.rounds.map((round, i) => {
+      return (
+        <tr key={i}>
+          <td>{round.id}</td>
+          <td>{round.name}</td>
+          <td>
+            <button
+              className="ui basic icon button"
+              onClick={() => this.props.deleteRound(round)}
+            >
+              <i className="trash icon" />
+            </button>
+          </td>
+        </tr>
+      );
+    });
+  };
+
+  componentDidMount = () => {
+    this.props.FetchRounds();
+  };
 
   render() {
     return (
@@ -52,18 +109,7 @@ class RoundsConfig extends React.Component {
           </thead>
           <tbody>
             {this.formDisplay()}
-            <tr>
-              <td>1</td>
-              <td>Technical</td>
-              <td>
-                <button
-                  className="ui basic icon button"
-                  onClick={() => console.log("delete")}
-                >
-                  <i className="trash icon" />
-                </button>
-              </td>
-            </tr>
+            {this.displayRounds()}
           </tbody>
         </table>
       </div>
@@ -71,4 +117,13 @@ class RoundsConfig extends React.Component {
   }
 }
 
-export default RoundsConfig;
+const mapStateToProps = state => {
+  return {
+    rounds: state.roundsList
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { FetchRounds }
+)(RoundsConfig);

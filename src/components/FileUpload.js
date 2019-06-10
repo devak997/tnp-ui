@@ -26,6 +26,7 @@ class FileUpload extends React.Component {
           clickable
           multiple
           onChange={(files) => this.props.SelectFiles(files)}
+          accepts={[".xlsx",".csv"]}
         >
           <h3>Drag Files here or Click to select</h3>
         </Files>
