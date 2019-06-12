@@ -8,6 +8,7 @@ import Dashboard from "./components/Dashboard";
 
 import AddStudentsDisplay from "./components/AddStudents";
 import FilterStudentsDisplay from "./components/FilterStudents";
+import SearchStudentDisplay from "./components/SearchStudent";
 
 import AddDriveDisplay from "./components/AddDrive";
 import DriveViewDisplay from "./components/DriveView";
@@ -71,6 +72,7 @@ class App extends React.Component {
                   <AddStudentsDisplay handleUpload={this.FileUploadHandler} />
                 )}
               />
+              <Route path="/students/search" component={SearchStudentDisplay} />
               <Route
                 path="/students/filter"
                 component={FilterStudentsDisplay}

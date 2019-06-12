@@ -18,21 +18,24 @@ const SideBar = props => {
         <div className="header">Student Details</div>
         <div className="menu">
           <Link to="/students/add" className="item">
-            Add Details
+            Import Student DB
           </Link>
           <Link to="/students/filter" className="item">
             Filter Students
+          </Link>
+          <Link to="/students/search" className="item">
+            Search Student
           </Link>
         </div>
       </div>
       <div className="item">
         <div className="header">Drive Management</div>
         <div className="menu">
-          <Link to="/drives/view" className="item">
-            View Drives
-          </Link>
           <Link to="/drives/add" className="item">
             Add Drive
+          </Link>
+          <Link to="/drives/view" className="item">
+            View Drives
           </Link>
           <Link to="/rounds/config" className="item">
             Rounds Configuration
@@ -40,10 +43,10 @@ const SideBar = props => {
         </div>
       </div>
       <div className="item">
-        <div className="header">Drive Reports</div>
+        <div className="header">Student Drive Process</div>
         <div className="menu">
           <Link to="/drives/attendance" className="item">
-            Attendance
+            Drive Attendance
           </Link>
           <Link to="/drives/performance" className="item">
             Student Performance in Drive
