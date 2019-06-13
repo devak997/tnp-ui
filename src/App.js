@@ -8,7 +8,6 @@ import Dashboard from "./components/Dashboard";
 
 import AddStudentsDisplay from "./components/AddStudents";
 import FilterStudentsDisplay from "./components/FilterStudents";
-import SearchStudentDisplay from "./components/SearchStudent";
 
 import AddDriveDisplay from "./components/AddDrive";
 import DriveViewDisplay from "./components/DriveView";
@@ -38,9 +37,9 @@ class App extends React.Component {
     const formData = new FormData()
     Object.keys(files).forEach((key) => {
       const file = files[key]
-      formData.append(key, new Blob([file], { type: file.type }), file.name || 'file')
+      formData.append("file", new Blob([file], { type: file.type }), file.name || 'file')
     })
-    tnpbase.post("/students/add/", formData, {
+    tnpbase.put("/students/add/", formData, {
       onUploadProgress: ProgressEvent => {
         this.setState({
           loaded: (ProgressEvent.loaded / ProgressEvent.total) * 100

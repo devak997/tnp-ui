@@ -31,15 +31,16 @@ class AddDrive extends React.Component {
       roundNames.push(this.state.selectedRounds[`round${i + 1}`]);
     }
     const data = {
-      companyName: this.state.companyName,
-      date: this.state.date.toLocaleDateString(),
+      company: this.state.companyName,
+      date_of_drive: this.state.date.toLocaleDateString(),
       noOfRounds: this.state.noOfRounds,
-      type: this.state.onCampus ? "ON Campus" : "OFF Campus",
+      type_of_drive: this.state.onCampus ? "ON Campus" : "OFF Campus",
       remarks: this.state.remarks,
-      selectedRounds: roundNames
+      round_id: roundNames
     };
+    console.log(data);
     tnpbase
-      .post("/drives/add", { data })
+      .put("/drives/add", { data })
       .then(() => console.log("data submitted"))
       .catch(err => console.log(err));
   };
@@ -67,7 +68,7 @@ class AddDrive extends React.Component {
             {this.props.rounds.map((round, i) => {
               return (
                 <option value={round.id} key={i}>
-                  {round.name}
+                  {round.round_name}
                 </option>
               );
             })}

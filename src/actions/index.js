@@ -24,15 +24,5 @@ export const SetRef = ref => {
 
 export const FetchRounds = () => async dispatch => {
   const response = await tnpbase.get("/rounds");
-  dispatch({ type: "FETCH_POSTS", payload: response });
-};
-
-export const FetchUpcomingDrives = () => async dispatch => {
-  const response = await tnpbase.get("/drives/upcoming");
-  dispatch({type: "FETCH_UPCOMING_DRIVES", payload: response.data});
-};
-
-export const FetchDrives = (year) => async dispatch => {
-  const response = await tnpbase.get("/drives/year", {data: year});
-  dispatch({type: "FETCH_DRIVES", payload: response.data});
+  dispatch({ type: "FETCH_ROUNDS", payload: response.data });
 };

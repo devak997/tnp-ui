@@ -7,15 +7,21 @@ class RoundsConfig extends React.Component {
   state = { showForm: false, round: "" };
 
   addRound = () => {
+    console.log(typeof {data:this.state.round});
     tnpbase
       .put("/round/add", { data: this.state.round })
-      .then(() => this.setState({ showForm: false }))
+      .then(() => {
+        this.setState({ showForm: false });
+        this.props.FetchRounds();
+      })
       .catch(err => console.log(err));
   };
 
   deleteRound = data => {
+    console.log(typeof {id:data});
+    data ={ id:data }
     tnpbase
-      .delete("/rounds.delete", { data })
+      .post("/rounds/delete",data )
       .then(() => this.props.FetchPosts())
       .catch(err => console.log(err));
   };
