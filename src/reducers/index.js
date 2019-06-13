@@ -31,10 +31,30 @@ const FetchRoundsReducer = (state = [], action) => {
   }
 };
 
+const FetchUpcomingDrives = (state = [], action) => {
+  switch(action.type) {
+    case "FETCH_UPCOMING_DRIVES":
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+const FetchDrives = (state =[], action) => {
+  switch(action.type) {
+    case "FETCH_DRIVES":
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   selectedFiles: HandleFileReducer,
   inputRef: SetRefReducer,
   roundsList: FetchRoundsReducer,
-  form: formReducer
+  form: formReducer,
+  upcomingDrives: FetchUpcomingDrives,
+  drivesList: FetchDrives
   
 });

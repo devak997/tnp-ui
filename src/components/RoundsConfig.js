@@ -76,11 +76,11 @@ class RoundsConfig extends React.Component {
       return (
         <tr key={i}>
           <td>{round.id}</td>
-          <td>{round.round_name}</td>
+          <td>{round.name}</td>
           <td>
             <button
               className="ui basic icon button"
-              onClick={() => this.deleteRound(round.id)}
+              onClick={() => this.props.deleteRound(round)}
             >
               <i className="trash icon" />
             </button>

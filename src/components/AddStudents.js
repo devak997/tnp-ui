@@ -27,7 +27,7 @@ const AddStudents = props => {
     <div>
       <h2 className="ui center aligned icon header" id="student-header">
         <i className="circular users icon" />
-        Add Students
+       Import Student DB
       </h2>
       <div className="ui centered grid">
         <div className="eight wide centered column">

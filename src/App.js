@@ -71,6 +71,7 @@ class App extends React.Component {
                   <AddStudentsDisplay handleUpload={this.FileUploadHandler} />
                 )}
               />
+              <Route path="/students/search" component={SearchStudentDisplay} />
               <Route
                 path="/students/filter"
                 component={FilterStudentsDisplay}
