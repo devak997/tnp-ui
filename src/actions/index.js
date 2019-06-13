@@ -1,5 +1,4 @@
 import tnpbase from "../api/tnpbase";
-import { async } from "q";
 
 export const SelectFiles = files => {
   return {

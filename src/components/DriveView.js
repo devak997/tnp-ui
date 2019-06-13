@@ -5,12 +5,45 @@ import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 
 class DriveView extends React.Component {
-  state = { editForm: false };
+  state = { editForm: false, upcomingDrivesStatus: []};
 
   componentDidMount = () => {
     this.props.FetchUpcomingDrives();
-  }
+    for(let i = 0; i<this.props.upcomingDrives.length; i++) {
+      this.state.upcomingDrivesStatus.push({editable: false})
+    }
+  };
+
+  displayDrives = () => {
+    return this.props.upcomingDrives.map((drive, i) => {
+      return (
+        <tr>
+          <td>{i}</td>
+          <td>{drive.company}</td>
+          <td>{drive.date}</td>
+          <td>{drive.noOfRounds}</td>
+          <td>{drive.roundsList}</td>
+          <td>
+            <div className="ui basic icon buttons">
+              <button
+                className="ui button"
+                onClick={() =>
+                  this.setState({ editForm: !this.state.editForm })
+                }
+              >
+                <i className="edit icon" />
+              </button>
+              <button className="ui button" onClick={() => {}}>
+                <i className="trash icon" />
+              </button>
+            </div>
+          </td>
+        </tr>
+      );
+    });
+  };
   render() {
+    console.log(this.state.upcomingDrivesStatus);
     return (
       <div className="ui container">
         <h3 className="ui center aligned icon header">
@@ -37,12 +70,6 @@ class DriveView extends React.Component {
           </div>
         </div>
         <br />
-        <button
-          className="ui right floated secondary button"
-          style={{ margin: "10px" }}
-        >
-          Edit
-        </button>
         <table className="ui blue compact table">
           <thead>
             <tr>
@@ -60,13 +87,13 @@ class DriveView extends React.Component {
               <td>TCS</td>
               <td>
                 <form className="ui form">
-                {this.state.editForm ? (
-                  <div className="ui input">
-                    <DatePicker />
-                  </div>
-                ) : (
-                  "26-11-2019"
-                )}
+                  {this.state.editForm ? (
+                    <div className="ui input">
+                      <DatePicker />
+                    </div>
+                  ) : (
+                    "26-11-2019"
+                  )}
                 </form>
               </td>
               <td>4</td>
@@ -80,7 +107,12 @@ class DriveView extends React.Component {
               </td>
               <td>
                 <div className="ui basic icon buttons">
-                  <button className="ui button" onClick={() => this.setState({editForm: !this.state.editForm})}>
+                  <button
+                    className="ui button"
+                    onClick={() =>
+                      this.setState({ editForm: !this.state.editForm })
+                    }
+                  >
                     <i className="edit icon" />
                   </button>
                   <button className="ui button" onClick={() => {}}>
@@ -98,8 +130,11 @@ class DriveView extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    upcomingDrives = state.upcomingDrives
+    upcomingDrives: state.upcomingDrives
   };
-}
+};
 
-export default connect(mapStateToProps,{ FetchUpcomingDrives})(DriveView);
+export default connect(
+  mapStateToProps,
+  { FetchUpcomingDrives }
+)(DriveView);
