@@ -3,37 +3,98 @@ import DatePicker from "react-datepicker";
 import { FetchUpcomingDrives } from "../actions/";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
+import tnpbase from "../api/tnpbase";
 
 class DriveView extends React.Component {
-  state = { editForm: false, upcomingDrivesStatus: []};
+  state = {
+    editForm: false,
+    upcomingDrivesStatus: [],
+    date: null,
+    showAddRound: false
+  };
+
+  deleteDrive = drive => {
+    tnpbase
+      .post("/drives/delete", { data: drive })
+      .then(() => console.log("" + drive + " is deleted"))
+      .catch(err => console.log(err));
+  };
 
   componentDidMount = () => {
     this.props.FetchUpcomingDrives();
-    for(let i = 0; i<this.props.upcomingDrives.length; i++) {
-      this.state.upcomingDrivesStatus.push({editable: false})
+    for (let i = 0; i < this.props.upcomingDrives.length; i++) {
+      this.state.upcomingDrivesStatus.push({ editable: false });
     }
   };
 
   displayDrives = () => {
     return this.props.upcomingDrives.map((drive, i) => {
       return (
-        <tr>
-          <td>{i}</td>
+        <tr key={i}>
+          <td>{i + 1}</td>
           <td>{drive.company}</td>
-          <td>{drive.date}</td>
+          <td>
+            {this.state.upcomingDrivesStatus[i].editable ? (
+              <form className="ui form">
+                <DatePicker
+                  value={this.state.date}
+                  onChange={date => this.setState({ date: date })}
+                />
+              </form>
+            ) : (
+              drive.date
+            )}
+          </td>
           <td>{drive.noOfRounds}</td>
-          <td>{drive.roundsList}</td>
+          <td>
+            {this.state.upcomingDrivesStatus[i].editable ? (
+              <div />
+            ) : (
+              <ol className="ui list">
+                {drive.roundsList.map((round, i) => {
+                  return <li key={i}>{round.name}</li>;
+                })}
+                <li style={{ display: this.state.showAddRound ? "" : "none" }}>
+                  <form className="ui form">
+                    <select style={{ padding: "1px", width: "130px" }}>
+                      <option value="">Select Round</option>
+                      {this.props.rounds.map((round, i) => {
+                        return (
+                          <option key={i} value={round.id}>
+                            {round.round_name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </form>
+                </li>
+              </ol>
+            )}
+          </td>
           <td>
             <div className="ui basic icon buttons">
               <button
-                className="ui button"
+                className=" ui button"
                 onClick={() =>
-                  this.setState({ editForm: !this.state.editForm })
+                  this.setState({ showAddRound: !this.state.showAddRound })
                 }
+              >
+                <i className="add icon" />
+              </button>
+              <button
+                className="ui button"
+                onClick={() => {
+                  let ups = this.state.upcomingDrivesStatus;
+                  ups[i].editable = !ups[i].editable;
+                  this.setState({ upcomingDrivesStatus: ups });
+                }}
               >
                 <i className="edit icon" />
               </button>
-              <button className="ui button" onClick={() => {}}>
+              <button
+                className="ui button"
+                onClick={() => this.deleteDrive(drive)}
+              >
                 <i className="trash icon" />
               </button>
             </div>
@@ -82,45 +143,7 @@ class DriveView extends React.Component {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>TCS</td>
-              <td>
-                <form className="ui form">
-                  {this.state.editForm ? (
-                    <div className="ui input">
-                      <DatePicker />
-                    </div>
-                  ) : (
-                    "26-11-2019"
-                  )}
-                </form>
-              </td>
-              <td>4</td>
-              <td>
-                <ol className="ui list">
-                  <li>Written Test</li>
-                  <li>Technical</li>
-                  <li>GD</li>
-                  <li>HR</li>
-                </ol>
-              </td>
-              <td>
-                <div className="ui basic icon buttons">
-                  <button
-                    className="ui button"
-                    onClick={() =>
-                      this.setState({ editForm: !this.state.editForm })
-                    }
-                  >
-                    <i className="edit icon" />
-                  </button>
-                  <button className="ui button" onClick={() => {}}>
-                    <i className="trash icon" />
-                  </button>
-                </div>
-              </td>
-            </tr>
+            {this.displayDrives()}
           </tbody>
         </table>
       </div>
@@ -130,7 +153,8 @@ class DriveView extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    upcomingDrives: state.upcomingDrives
+    upcomingDrives: state.upcomingDrives,
+    rounds: state.roundsList
   };
 };
 
