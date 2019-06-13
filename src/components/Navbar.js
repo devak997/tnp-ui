@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 const Navbar = props => {
   return (
     <div className="ui inverted blue menu " style={{ borderRadius: 0.5 }}>
-      <a className="item" onClick={props.handleMenuClick} href="#">
+      {/*eslint-disable-next-line*/}
+      <a className="item" onClick={props.handleMenuClick}>
         <i className="sidebar icon" />
         Menu
       </a>
@@ -12,7 +13,8 @@ const Navbar = props => {
         Home
       </Link>
       <div className="right menu">
-        <a className="ui item" href="#">
+         {/*eslint-disable-next-line*/}
+        <a className="ui item">
           Logout
         </a>
       </div>
