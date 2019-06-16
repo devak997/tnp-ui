@@ -9,7 +9,9 @@ class DriveView extends React.Component {
     editForm: false,
     upcomingDrivesStatus: [],
     upcomingDrives: [],
-    date: null
+    date: null,
+    rounds: [],
+    showTickButtons: false
   };
 
   fetchUpcomingDrives = () => {
@@ -34,6 +36,10 @@ class DriveView extends React.Component {
       .post("/drives/delete", { data: drive })
       .then(() => console.log("" + drive + " is deleted"))
       .catch(err => console.log(err));
+  };
+
+  submitData = () => {
+    console.log("submit Clicked",this.state)
   };
 
   componentDidMount = () => {
@@ -101,41 +107,73 @@ class DriveView extends React.Component {
           <td>{drive.type_of_drive}</td>
           <td>{drive.remarks}</td>
           <td>
-            <div className="ui basic icon buttons">
-              <button
-                className=" ui button"
-                onClick={() => {
-                  let ups = this.state.upcomingDrivesStatus;
-                  ups[i].showAddRound = !ups[i].showAddRound;
-                  this.setState({ upcomingDrivesStatus: ups});
-                }}
-              >
-                <i className="add icon" />
-              </button>
-              <button
-                className="ui button"
-                onClick={() => {
-                  let ups = this.state.upcomingDrivesStatus;
-                  ups[i].editable = !ups[i].editable;
-                  this.setState({ upcomingDrivesStatus: ups, date: new Date(drive.date_of_drive) });
-                }}
-              >
-                <i className="edit icon" />
-              </button>
-              <button
-                className="ui button"
-                onClick={() => this.deleteDrive(drive)}
-              >
-                <i className="trash icon" />
-              </button>
-            </div>
+            {this.state.showTickButtons ? (
+              <div className="ui basic icon buttons">
+                <button className="ui button" onClick={this.submitData}>
+                  <i className="tick icon" />
+                </button>
+                <button
+                  className="ui button"
+                  onClick={() => {
+                    let ups = this.state.upcomingDrivesStatus;
+                    ups[i].showAddRound = false;
+                    ups[i].editable = false;
+                    this.setState({
+                      upcomingDrivesStatus: ups,
+                      showTickButtons: false
+                    });
+                  }}
+                >
+                  <i className="x icon" />
+                </button>
+              </div>
+            ) : (
+              <div className="ui basic icon buttons">
+                <button
+                  className=" ui button"
+                  onClick={() => {
+                    let ups = this.state.upcomingDrivesStatus;
+                    ups[i].showAddRound = !ups[i].showAddRound;
+                    this.setState({
+                      upcomingDrivesStatus: ups,
+                      date: new Date(drive.date_of_drive),
+                      showTickButtons: true,
+                      rounds: drive.rounds
+                    });
+                  }}
+                >
+                  <i className="add icon" />
+                </button>
+                <button
+                  className="ui button"
+                  onClick={() => {
+                    let ups = this.state.upcomingDrivesStatus;
+                    ups[i].editable = !ups[i].editable;
+                    this.setState({
+                      upcomingDrivesStatus: ups,
+                      date: new Date(drive.date_of_drive),
+                      showTickButtons: true,
+                      rounds: drive.rounds
+                    });
+                  }}
+                >
+                  <i className="edit icon" />
+                </button>
+                <button
+                  className="ui button"
+                  onClick={() => this.deleteDrive(drive)}
+                >
+                  <i className="trash icon" />
+                </button>
+              </div>
+            )}
           </td>
         </tr>
       );
     });
   };
   render() {
-    console.log(this.state.date)
+    console.log(this.state.date);
     return (
       <div className="ui container">
         <h3 className="ui center aligned icon header">
