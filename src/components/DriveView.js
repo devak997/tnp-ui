@@ -11,7 +11,8 @@ class DriveView extends React.Component {
     upcomingDrives: [],
     date: null,
     rounds: [],
-    showTickButtons: false
+    showTickButtons: false,
+    newRound: null
   };
 
   fetchUpcomingDrives = () => {
@@ -39,7 +40,18 @@ class DriveView extends React.Component {
   };
 
   submitData = () => {
-    console.log("submit Clicked",this.state)
+    if (this.state.newRound !== null) {
+      this.setState({ rounds: [...this.state.rounds, this.state.newRound] });
+    }
+
+    const data = { rounds: this.state.rounds, date: this.state.date };
+    console.log(data)
+    tnpbase
+      .post("/drives/modify", { data })
+      .then(() => {this.setState({ showTickButtons: false }); this.fetchUpcomingDrives()})
+      .catch(err => console.log(err));
+
+    console.log("submit Clicked", this.state);
   };
 
   componentDidMount = () => {
@@ -75,11 +87,34 @@ class DriveView extends React.Component {
           <td>{drive.no_of_rounds}</td>
           <td>
             {this.state.upcomingDrivesStatus[i].editable ? (
-              <div />
+              <ol className="ui list">
+                {drive.rounds.map((drive_round, j) => {
+                  return (
+                    <li key={j}>
+                      <select
+                        className="ui dropdown"
+                        value={this.state.rounds[j]}
+                        style={{ padding: "2px", height: "25px" }}
+                        onChange={e => {
+                          let rounds = this.state.rounds;
+                          rounds[j] = parseInt(e.target.value);
+                          this.setState({ rounds: rounds });
+                        }}
+                      >
+                        {this.props.rounds.map((round, i) => {
+                          return (
+                            <option value={round.id}>{round.round_name}</option>
+                          );
+                        })}
+                      </select>
+                    </li>
+                  );
+                })}
+              </ol>
             ) : (
               <ol className="ui list">
-                {drive.rounds.map((rounds, i) => {
-                  return <li key={i}>{rounds}</li>;
+                {drive.rounds.map((round, i) => {
+                  return <li key={i}>{round.round_name}</li>;
                 })}
                 <li
                   style={{
@@ -89,7 +124,13 @@ class DriveView extends React.Component {
                   }}
                 >
                   <form className="ui form">
-                    <select style={{ padding: "1px", width: "110px" }}>
+                    <select
+                      style={{ padding: "1px", width: "110px" }}
+                      value={this.state.newRound}
+                      onChange={e =>
+                        this.setState({ newRound: parseInt(e.target.value) })
+                      }
+                    >
                       <option value="">Select Round</option>
                       {this.props.rounds.map((round, i) => {
                         return (
@@ -109,8 +150,8 @@ class DriveView extends React.Component {
           <td>
             {this.state.showTickButtons ? (
               <div className="ui basic icon buttons">
-                <button className="ui button" onClick={this.submitData}>
-                  <i className="tick icon" />
+                <button className="ui button" onClick={() => this.submitData()}>
+                  <i className="check icon" />
                 </button>
                 <button
                   className="ui button"
@@ -134,11 +175,15 @@ class DriveView extends React.Component {
                   onClick={() => {
                     let ups = this.state.upcomingDrivesStatus;
                     ups[i].showAddRound = !ups[i].showAddRound;
+                    let rounds = [];
+                    for (let temp = 0; temp < drive.rounds.length; temp++) {
+                      rounds.push(drive.rounds[temp].id);
+                    }
                     this.setState({
                       upcomingDrivesStatus: ups,
                       date: new Date(drive.date_of_drive),
                       showTickButtons: true,
-                      rounds: drive.rounds
+                      rounds: rounds
                     });
                   }}
                 >
@@ -149,11 +194,15 @@ class DriveView extends React.Component {
                   onClick={() => {
                     let ups = this.state.upcomingDrivesStatus;
                     ups[i].editable = !ups[i].editable;
+                    let rounds = [];
+                    for (let temp = 0; temp < drive.rounds.length; temp++) {
+                      rounds.push(drive.rounds[temp].id);
+                    }
                     this.setState({
                       upcomingDrivesStatus: ups,
                       date: new Date(drive.date_of_drive),
                       showTickButtons: true,
-                      rounds: drive.rounds
+                      rounds: rounds
                     });
                   }}
                 >
@@ -173,7 +222,6 @@ class DriveView extends React.Component {
     });
   };
   render() {
-    console.log(this.state.date);
     return (
       <div className="ui container">
         <h3 className="ui center aligned icon header">
