@@ -32,15 +32,15 @@ class AddDrive extends React.Component {
     }
     const data = {
       company: this.state.companyName,
-      date_of_drive: this.state.date.toLocaleDateString(),
-      noOfRounds: this.state.noOfRounds,
+      date_of_drive: this.state.date.toLocaleDateString('en-GB'),
       type_of_drive: this.state.onCampus ? "ON Campus" : "OFF Campus",
       remarks: this.state.remarks,
+      no_of_rounds: this.state.noOfRounds,
       round_id: roundNames
     };
     console.log(data);
     tnpbase
-      .put("/drives/add", { data })
+      .post("/drives/add", { data })
       .then(() => console.log("data submitted"))
       .catch(err => console.log(err));
   };

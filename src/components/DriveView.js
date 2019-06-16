@@ -22,12 +22,23 @@ class DriveView extends React.Component {
 
   componentDidMount = () => {
     this.props.FetchUpcomingDrives();
+  };
+
+  componentWillUpdate = () => {
+    this.setState({ upcomingDrivesStatus: [] });
     for (let i = 0; i < this.props.upcomingDrives.length; i++) {
       this.state.upcomingDrivesStatus.push({ editable: false });
     }
   };
 
   displayDrives = () => {
+    if (this.state.upcomingDrivesStatus.length === 0) {
+      return (
+        <tr>
+          <td colSpan={5}>It's Lonely Here</td>
+        </tr>
+      );
+    }
     return this.props.upcomingDrives.map((drive, i) => {
       return (
         <tr key={i}>
@@ -42,17 +53,17 @@ class DriveView extends React.Component {
                 />
               </form>
             ) : (
-              drive.date
+              drive.date_of_drive
             )}
           </td>
-          <td>{drive.noOfRounds}</td>
+          <td>{drive.no_of_rounds}</td>
           <td>
             {this.state.upcomingDrivesStatus[i].editable ? (
               <div />
             ) : (
               <ol className="ui list">
-                {drive.roundsList.map((round, i) => {
-                  return <li key={i}>{round.name}</li>;
+                {drive.rounds.map((rounds, i) => {
+                  return <li key={i}>{rounds}</li>;
                 })}
                 <li style={{ display: this.state.showAddRound ? "" : "none" }}>
                   <form className="ui form">
@@ -104,7 +115,7 @@ class DriveView extends React.Component {
     });
   };
   render() {
-    console.log(this.state.upcomingDrivesStatus);
+    // console.log("Upcoming drives status:", this.state.upcomingDrivesStatus);
     return (
       <div className="ui container">
         <h3 className="ui center aligned icon header">
@@ -142,9 +153,7 @@ class DriveView extends React.Component {
               <td>Action</td>
             </tr>
           </thead>
-          <tbody>
-            {this.displayDrives()}
-          </tbody>
+          <tbody>{this.displayDrives()}</tbody>
         </table>
       </div>
     );
