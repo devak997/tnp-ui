@@ -56,15 +56,14 @@ class DriveView extends React.Component {
           <td>
             {this.state.upcomingDrivesStatus[i].editable ? (
               <form className="ui form">
-                <div className="field">
                 <DatePicker
-                  value={this.state.date}
+                  selected={this.state.date}
                   onChange={date => this.setState({ date: date })}
+                  dateFormat="dd/MM/yyyy"
                 />
-                </div>
               </form>
             ) : (
-              new Date(drive.date_of_drive).toDateString("en-GB")
+              new Date(drive.date_of_drive).toDateString()
             )}
           </td>
           <td>{drive.no_of_rounds}</td>
@@ -108,7 +107,7 @@ class DriveView extends React.Component {
                 onClick={() => {
                   let ups = this.state.upcomingDrivesStatus;
                   ups[i].showAddRound = !ups[i].showAddRound;
-                  this.setState({ upcomingDrivesStatus: ups });
+                  this.setState({ upcomingDrivesStatus: ups});
                 }}
               >
                 <i className="add icon" />
@@ -118,7 +117,7 @@ class DriveView extends React.Component {
                 onClick={() => {
                   let ups = this.state.upcomingDrivesStatus;
                   ups[i].editable = !ups[i].editable;
-                  this.setState({ upcomingDrivesStatus: ups});
+                  this.setState({ upcomingDrivesStatus: ups, date: new Date(drive.date_of_drive) });
                 }}
               >
                 <i className="edit icon" />
@@ -136,6 +135,7 @@ class DriveView extends React.Component {
     });
   };
   render() {
+    console.log(this.state.date)
     return (
       <div className="ui container">
         <h3 className="ui center aligned icon header">
@@ -162,7 +162,7 @@ class DriveView extends React.Component {
           </div>
         </div>
         <br />
-        <table className="ui fixed blue celled striped table">
+        <table className="ui blue celled striped table">
           <thead>
             <tr>
               <th>SNo.</th>
