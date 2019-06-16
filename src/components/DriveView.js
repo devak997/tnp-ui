@@ -9,8 +9,7 @@ class DriveView extends React.Component {
     editForm: false,
     upcomingDrivesStatus: [],
     upcomingDrives: [],
-    date: null,
-    showAddRound: false
+    date: null
   };
 
   fetchUpcomingDrives = () => {
@@ -23,7 +22,7 @@ class DriveView extends React.Component {
           upcomingDrivesStatus: []
         });
         for (let i = 0; i < this.state.upcomingDrives.length; i++) {
-          status.push({ editable: false });
+          status.push({ editable: false, showAddRound: false });
         }
         this.setState({ upcomingDrivesStatus: status });
       })
@@ -57,13 +56,15 @@ class DriveView extends React.Component {
           <td>
             {this.state.upcomingDrivesStatus[i].editable ? (
               <form className="ui form">
+                <div className="field">
                 <DatePicker
                   value={this.state.date}
                   onChange={date => this.setState({ date: date })}
                 />
+                </div>
               </form>
             ) : (
-              drive.date_of_drive.toLocaleDateString()
+              new Date(drive.date_of_drive).toDateString("en-GB")
             )}
           </td>
           <td>{drive.no_of_rounds}</td>
@@ -75,9 +76,15 @@ class DriveView extends React.Component {
                 {drive.rounds.map((rounds, i) => {
                   return <li key={i}>{rounds}</li>;
                 })}
-                <li style={{ display: this.state.showAddRound ? "" : "none" }}>
+                <li
+                  style={{
+                    display: this.state.upcomingDrivesStatus[i].showAddRound
+                      ? ""
+                      : "none"
+                  }}
+                >
                   <form className="ui form">
-                    <select style={{ padding: "1px", width: "130px" }}>
+                    <select style={{ padding: "1px", width: "110px" }}>
                       <option value="">Select Round</option>
                       {this.props.rounds.map((round, i) => {
                         return (
@@ -92,15 +99,17 @@ class DriveView extends React.Component {
               </ol>
             )}
           </td>
-          <td>{drive.type}</td>
+          <td>{drive.type_of_drive}</td>
           <td>{drive.remarks}</td>
           <td>
             <div className="ui basic icon buttons">
               <button
                 className=" ui button"
-                onClick={() =>
-                  this.setState({ showAddRound: !this.state.showAddRound })
-                }
+                onClick={() => {
+                  let ups = this.state.upcomingDrivesStatus;
+                  ups[i].showAddRound = !ups[i].showAddRound;
+                  this.setState({ upcomingDrivesStatus: ups });
+                }}
               >
                 <i className="add icon" />
               </button>
@@ -109,7 +118,7 @@ class DriveView extends React.Component {
                 onClick={() => {
                   let ups = this.state.upcomingDrivesStatus;
                   ups[i].editable = !ups[i].editable;
-                  this.setState({ upcomingDrivesStatus: ups });
+                  this.setState({ upcomingDrivesStatus: ups});
                 }}
               >
                 <i className="edit icon" />
@@ -153,17 +162,17 @@ class DriveView extends React.Component {
           </div>
         </div>
         <br />
-        <table className="ui blue compact table">
+        <table className="ui fixed blue celled striped table">
           <thead>
             <tr>
-              <td>SNo.</td>
-              <td>Company Name</td>
-              <td>Date</td>
-              <td>No of Rounds</td>
-              <td>Rounds</td>
-              <td>Type</td>
-              <td>Remarks</td>
-              <td>Action</td>
+              <th>SNo.</th>
+              <th>Company</th>
+              <th>Date</th>
+              <th>#Rounds</th>
+              <th>Rounds</th>
+              <th>Type</th>
+              <th>Remarks</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>{this.displayDrives()}</tbody>
