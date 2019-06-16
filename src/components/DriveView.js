@@ -83,6 +83,12 @@ class DriveView extends React.Component {
             )}
           </td>
           <td>
+            {drive.type}
+          </td>
+          <td>
+            {drive.remarks}
+          </td>
+          <td>
             <div className="ui basic icon buttons">
               <button
                 className=" ui button"
@@ -150,6 +156,8 @@ class DriveView extends React.Component {
               <td>Date</td>
               <td>No of Rounds</td>
               <td>Rounds</td>
+              <td>Type</td>
+              <td>Remarks</td>
               <td>Action</td>
             </tr>
           </thead>
