@@ -1,6 +1,5 @@
 import React from "react";
 import DatePicker from "react-datepicker";
-import { FetchUpcomingDrives } from "../actions/";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import tnpbase from "../api/tnpbase";
@@ -9,8 +8,26 @@ class DriveView extends React.Component {
   state = {
     editForm: false,
     upcomingDrivesStatus: [],
+    upcomingDrives: [],
     date: null,
     showAddRound: false
+  };
+
+  fetchUpcomingDrives = () => {
+    tnpbase
+      .get("/drives/upcoming")
+      .then(response => {
+        const status = [];
+        this.setState({
+          upcomingDrives: response.data,
+          upcomingDrivesStatus: []
+        });
+        for (let i = 0; i < this.state.upcomingDrives.length; i++) {
+          status.push({ editable: false });
+        }
+        this.setState({ upcomingDrivesStatus: status });
+      })
+      .catch(err => console.log(err));
   };
 
   deleteDrive = drive => {
@@ -21,14 +38,7 @@ class DriveView extends React.Component {
   };
 
   componentDidMount = () => {
-    this.props.FetchUpcomingDrives();
-  };
-
-  componentWillUpdate = () => {
-    this.setState({ upcomingDrivesStatus: [] });
-    for (let i = 0; i < this.props.upcomingDrives.length; i++) {
-      this.state.upcomingDrivesStatus.push({ editable: false });
-    }
+    this.fetchUpcomingDrives();
   };
 
   displayDrives = () => {
@@ -39,7 +49,7 @@ class DriveView extends React.Component {
         </tr>
       );
     }
-    return this.props.upcomingDrives.map((drive, i) => {
+    return this.state.upcomingDrives.map((drive, i) => {
       return (
         <tr key={i}>
           <td>{i + 1}</td>
@@ -82,12 +92,8 @@ class DriveView extends React.Component {
               </ol>
             )}
           </td>
-          <td>
-            {drive.type}
-          </td>
-          <td>
-            {drive.remarks}
-          </td>
+          <td>{drive.type}</td>
+          <td>{drive.remarks}</td>
           <td>
             <div className="ui basic icon buttons">
               <button
@@ -121,7 +127,6 @@ class DriveView extends React.Component {
     });
   };
   render() {
-    // console.log("Upcoming drives status:", this.state.upcomingDrivesStatus);
     return (
       <div className="ui container">
         <h3 className="ui center aligned icon header">
@@ -170,12 +175,8 @@ class DriveView extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    upcomingDrives: state.upcomingDrives,
     rounds: state.roundsList
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { FetchUpcomingDrives }
-)(DriveView);
+export default connect(mapStateToProps)(DriveView);

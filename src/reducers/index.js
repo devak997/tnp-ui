@@ -31,14 +31,14 @@ const FetchRoundsReducer = (state = [], action) => {
   }
 };
 
-const FetchUpcomingDrives = (state = [], action) => {
-  switch(action.type) {
-    case "FETCH_UPCOMING_DRIVES":
-      return action.payload;
-    default:
-      return state;
-  }
-};
+// const FetchUpcomingDrives = (state = [], action) => {
+//   switch(action.type) {
+//     case "FETCH_UPCOMING_DRIVES":
+//       return action.payload;
+//     default:
+//       return state;
+//   }
+// };
 
 const FetchDrives = (state =[], action) => {
   switch(action.type) {
@@ -54,7 +54,6 @@ export default combineReducers({
   inputRef: SetRefReducer,
   roundsList: FetchRoundsReducer,
   form: formReducer,
-  upcomingDrives: FetchUpcomingDrives,
   drivesList: FetchDrives
   
 });
