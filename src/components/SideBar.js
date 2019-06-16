@@ -18,10 +18,13 @@ const SideBar = props => {
         <div className="header">Student Details</div>
         <div className="menu">
           <Link to="/students/add" className="item">
-            Add Details
+           Import Student DB
           </Link>
           <Link to="/students/filter" className="item">
             Filter Students
+          </Link>
+          <Link to="/students/search" className="item">
+            Search Student
           </Link>
         </div>
       </div>
