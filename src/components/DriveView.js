@@ -63,7 +63,7 @@ class DriveView extends React.Component {
                 />
               </form>
             ) : (
-              drive.date_of_drive
+              drive.date_of_drive.toLocaleDateString()
             )}
           </td>
           <td>{drive.no_of_rounds}</td>
