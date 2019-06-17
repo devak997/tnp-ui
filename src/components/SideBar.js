@@ -18,7 +18,7 @@ const SideBar = props => {
         <div className="header">Student Details</div>
         <div className="menu">
           <Link to="/students/add" className="item">
-           Import Student DB
+            Import Student DB
           </Link>
           <Link to="/students/filter" className="item">
             Filter Students
@@ -67,6 +67,7 @@ const SideBar = props => {
       <div className="item">
         <div className="header">Support</div>
         <div className="menu">
+          {/* eslint-disable-next-line*/}
           <a className="item" href="#">
             E-mail Support
           </a>

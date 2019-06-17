@@ -3,31 +3,74 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import tnpbase from "../api/tnpbase";
+import { compose } from "C:/Users/sanam/AppData/Local/Microsoft/TypeScript/3.5/node_modules/redux";
 
 class DriveView extends React.Component {
   state = {
     editForm: false,
     upcomingDrivesStatus: [],
-    upcomingDrives: [],
+    drives: [],
     date: null,
     rounds: [],
     showTickButtons: false,
-    newRound: null
+    newRound: "",
+    years: [],
+    selectedVal: "",
+    isUpcoming: true
+  };
+
+  fetchYears = () => {
+    tnpbase
+      .get("/passing/year")
+      .then(response => {
+        let data = [];
+        for (let i = 0; i < response.data.length; i++) {
+          data.push(response.data[i].passing_out_year);
+        }
+        this.setState({ years: data });
+      })
+      .catch(err => console.log(err));
+  };
+
+  getDrives = () => {
+    if(this.state.selectedVal === "") {
+      this.setState({isUpcoming: true});
+      this.fetchUpcomingDrives();
+    } else {
+      this.setState({isUpcoming: false, drives: []});
+      this.fetchOldDrives();
+    }
+  }
+
+  fetchOldDrives = () => {
+    const data = { year: this.state.selectedVal};
+    tnpbase.post("/drives/olddrive", {data}).then((response) => this.setState({drives: response.data})).catch(err =>console.log(err) )
+  }
+
+  deleteRound = (drive_id, round_id, noOfRounds) => {
+    const data = { drive_id, round_id, noOfRounds };
+    console.log(data);
+    tnpbase
+      .post("/drives/rounds/delete", { data })
+      .then(() => {
+        this.fetchUpcomingDrives();
+      })
+      .catch(err => console.log(err));
   };
 
   fetchUpcomingDrives = () => {
     tnpbase
       .get("/drives/upcoming")
       .then(response => {
+        console.log("In upcoming rounds");
         const status = [];
-        this.setState({
-          upcomingDrives: response.data,
-          upcomingDrivesStatus: []
-        });
-        for (let i = 0; i < this.state.upcomingDrives.length; i++) {
+        for (let count = 0; count < response.data.length; count++) {
           status.push({ editable: false, showAddRound: false });
         }
-        this.setState({ upcomingDrivesStatus: status });
+        this.setState({
+          drives: response.data,
+          upcomingDrivesStatus: status
+        });
       })
       .catch(err => console.log(err));
   };
@@ -35,27 +78,37 @@ class DriveView extends React.Component {
   deleteDrive = drive => {
     tnpbase
       .post("/drives/delete", { data: drive })
-      .then(() => console.log("" + drive + " is deleted"))
+      .then(() => {
+        console.log("In delete");
+        this.fetchUpcomingDrives();
+      })
       .catch(err => console.log(err));
   };
 
-  submitData = () => {
-    if (this.state.newRound !== null) {
-      this.setState({ rounds: [...this.state.rounds, this.state.newRound] });
+  submitData = drive_id => {
+    if (this.state.newRound !== "") {
+      const final_rounds = this.state.rounds;
+      final_rounds.push(this.state.newRound);
+      this.setState({ rounds: final_rounds });
     }
-
-    const data = { rounds: this.state.rounds, date: this.state.date };
-    console.log(data)
+    const data = {
+      rounds: this.state.rounds,
+      date: this.state.date.toLocaleDateString("en-GB"),
+      drive_id: drive_id
+    };
+    console.log(data);
     tnpbase
       .post("/drives/modify", { data })
-      .then(() => {this.setState({ showTickButtons: false }); this.fetchUpcomingDrives()})
+      .then(() => {
+        this.setState({ showTickButtons: false });
+        this.fetchUpcomingDrives();
+      })
       .catch(err => console.log(err));
-
-    console.log("submit Clicked", this.state);
   };
 
   componentDidMount = () => {
     this.fetchUpcomingDrives();
+    this.fetchYears();
   };
 
   displayDrives = () => {
@@ -66,7 +119,7 @@ class DriveView extends React.Component {
         </tr>
       );
     }
-    return this.state.upcomingDrives.map((drive, i) => {
+    return this.state.drives.map((drive, i) => {
       return (
         <tr key={i}>
           <td>{i + 1}</td>
@@ -114,7 +167,24 @@ class DriveView extends React.Component {
             ) : (
               <ol className="ui list">
                 {drive.rounds.map((round, i) => {
-                  return <li key={i}>{round.round_name}</li>;
+                  return (
+                    <li key={i}>
+                      {round.round_name}
+                      <button
+                        className="mini ui right floated icon button"
+                        style={{ padding: 2.5 }}
+                        onClick={() =>
+                          this.deleteRound(
+                            drive.drive_id,
+                            round.id,
+                            drive.rounds.length
+                          )
+                        }
+                      >
+                        <i className="trash icon" />
+                      </button>
+                    </li>
+                  );
                 })}
                 <li
                   style={{
@@ -147,10 +217,13 @@ class DriveView extends React.Component {
           </td>
           <td>{drive.type_of_drive}</td>
           <td>{drive.remarks}</td>
-          <td>
+          <td style={{display: this.state.isUpcoming ? "" : "none"}}>
             {this.state.showTickButtons ? (
               <div className="ui basic icon buttons">
-                <button className="ui button" onClick={() => this.submitData()}>
+                <button
+                  className="ui button"
+                  onClick={() => this.submitData(drive.drive_id)}
+                >
                   <i className="check icon" />
                 </button>
                 <button
@@ -238,17 +311,27 @@ class DriveView extends React.Component {
               Drive Date
             </label>
             <div className="ui fluid action input">
-              <select>
-                <option>Upcoming drives</option>
-                <option>Completed drives - Current Year</option>
-                <option>2018</option>
+              <select
+                value={this.state.selectedVal}
+                onChange={e =>
+                  this.setState({ selectedVal: parseInt(e.target.value) })
+                }
+              >
+                <option value="">Upcoming drives</option>
+                {this.state.years.map((year, i) => {
+                  return (
+                    <option key={i} value={year}>
+                      {year}
+                    </option>
+                  );
+                })}
               </select>
-              <button className="ui secondary button">Get Drives</button>
+              <button className="ui secondary button" onClick={this.getDrives}>Get Drives</button>
             </div>
           </div>
         </div>
         <br />
-        <table className="ui blue celled striped table">
+        <table className="ui blue celled striped compact table">
           <thead>
             <tr>
               <th>SNo.</th>
@@ -258,7 +341,7 @@ class DriveView extends React.Component {
               <th>Rounds</th>
               <th>Type</th>
               <th>Remarks</th>
-              <th>Action</th>
+              <th style={{display: this.state.isUpcoming ? "" : "none"}}>Action</th>
             </tr>
           </thead>
           <tbody>{this.displayDrives()}</tbody>
