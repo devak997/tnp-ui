@@ -3,7 +3,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
 import tnpbase from "../api/tnpbase";
-import { compose } from "C:/Users/sanam/AppData/Local/Microsoft/TypeScript/3.5/node_modules/redux";
 
 class DriveView extends React.Component {
   state = {
