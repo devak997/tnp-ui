@@ -1,5 +1,33 @@
 import React from "react";
 import tnpbase from "../api/tnpbase";
+import Multiselect from "./Multiselect/MultiSelect";
+
+const data = [
+  {
+    name: "CSE",
+    value: "cse"
+  },
+  {
+    name: "IT",
+    value: "it"
+  },
+  {
+    name: "ECE",
+    value: "ece"
+  },
+  {
+    name: "EEE",
+    value: "eee"
+  },
+  {
+    name: "CIVIL",
+    value: "civil"
+  },
+  {
+    name: "MECH",
+    value: "mech"
+  }
+];
 
 class FilterStudents extends React.Component {
   state = {
@@ -8,7 +36,7 @@ class FilterStudents extends React.Component {
     class12Score: "",
     alreadySelected: "yes",
     eamcetRank: "",
-    branch: "",
+    branch: [],
     YOP: "",
     backLogs: 0,
     gender: "all",
@@ -43,7 +71,7 @@ class FilterStudents extends React.Component {
       <div className="ui container">
         <h2 className="ui header center aligned">Filter Students</h2>
         <div className="ui form">
-          <div className="three fields">
+          <div className="two fields">
             <div className="field">
               <label>Btech Score</label>
               <div className="ui right labeled input">
@@ -72,21 +100,6 @@ class FilterStudents extends React.Component {
                   </option>
                 </select>
               </div>
-            </div>
-            <div className="field">
-              <label>Branch</label>
-              <select
-                value={this.state.branch}
-                onChange={e => this.setState({ branch: e.target.value })}
-              >
-                <option value="">Select Branch</option>
-                <option value="cse">CSE</option>
-                <option value="it">IT</option>
-                <option value="ece">ECE</option>
-                <option value="eee">EEE</option>
-                <option value="mech">MECH</option>
-                <option value="civil">CIVIL</option>
-              </select>
             </div>
             <div className="field">
               <label>Backlogs</label>
@@ -202,6 +215,13 @@ class FilterStudents extends React.Component {
                 <option>No</option>
               </select>
             </div>
+          </div>
+          <div className="field">
+            <label>Branch</label>
+            <Multiselect
+              options={data}
+              onSelectOptions={res => this.setState({branch: res})}
+            />
           </div>
           <button
             className="big ui secondary button"
