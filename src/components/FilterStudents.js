@@ -5,27 +5,27 @@ import Multiselect from "./Multiselect/MultiSelect";
 const data = [
   {
     name: "CSE",
-    value: "cse"
+    value: "5"
   },
   {
     name: "IT",
-    value: "it"
+    value: "12"
   },
   {
     name: "ECE",
-    value: "ece"
+    value: "4"
   },
   {
     name: "EEE",
-    value: "eee"
+    value: "2"
   },
   {
     name: "CIVIL",
-    value: "civil"
+    value: "1"
   },
   {
     name: "MECH",
-    value: "mech"
+    value: "3"
   }
 ];
 
@@ -57,12 +57,13 @@ class FilterStudents extends React.Component {
       class10_score_type: this.state.class10ScoreType,
       eamcet_rank: this.state.eamcetRank,
       gender: this.state.gender,
-      isSelected: this.state.alreadySelected
+      isSelected: this.state.alreadySelected,
+      year_of_passing: this.state.YOP
     };
-
+    console.log(data);
     tnpbase
-      .post("/students/filter", { data })
-      .then(() => console.log("data submitted"))
+      .post("/students/filter", {data})
+      .then((res) => console.log(res))
       .catch(err => console.log(err));
   };
 
