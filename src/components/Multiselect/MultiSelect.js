@@ -47,11 +47,24 @@ export class Multiselect extends Component {
       this.setState({ dropDownValue: this.props.options });
     }
   }
+
+  chipVal = (data) => {
+    switch(data) {
+      case "5": return("CSE");
+      case "12": return("IT");
+      case "4": return("ECE");
+      case "3": return("MECH");
+      case "1": return("CIVIL");
+      case "2": return("EEE");
+    }
+  }
   returnChip() {
     const chip = this.state.checked
       ? this.state.checked.map((data, index) => (
           <div className="chip-body-tnp" key={index}>
-            <p className="chip-text-tnp">{data}</p>
+            <p className="chip-text-tnp">{
+             this.chipVal(data)
+            }</p>
             <button
               className="chip-close-tnp"
               onClick={e => this.removeChip(data)}

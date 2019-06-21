@@ -42,7 +42,10 @@ class FilterStudents extends React.Component {
     gender: "all",
     btechScoreType: "",
     class12ScoreType: "",
-    class10ScoreType: ""
+    class10ScoreType: "",
+    filteredStudents: [],
+    driveToAdd: "",
+    allDrives: []
   };
 
   submitFilterDetails = () => {
@@ -62,8 +65,47 @@ class FilterStudents extends React.Component {
     };
     console.log(data);
     tnpbase
-      .post("/students/filter", {data})
-      .then((res) => console.log(res))
+      .post("/students/filter", { data })
+      .then(res => {
+        this.setState({ filteredStudents: res.data });
+      })
+      .catch(err => console.log(err));
+  };
+
+  getAllDrives = () => {
+    tnpbase
+      .get("/drives/all")
+      .then(res => this.setState({ driveToAdd: res.data }))
+      .catch(err => console.log(err));
+  };
+
+  showFilteredStudents = () => {
+    return this.state.filteredStudents.map((student, i) => {
+      return (
+        <tr key={i}>
+          <td>1</td>
+          <td>{student.roll_number}</td>
+          <td>{student.name}</td>
+          <td>{student.class10_score}</td>
+          <td>{student.class12_score}</td>
+          <td>{student.eamcet_rank}</td>
+          <td>{student.btech_score}</td>
+          <td>{student.backlogs}</td>
+          <td>{student.branch}</td>
+          <td>{student.gender}</td>
+          <td>{student.yop}</td>
+          <td>{student.selected}</td>
+          <td>{student.mobile}</td>
+          <td>{student.email}</td>
+        </tr>
+      );
+    });
+  };
+
+  addToDrive = () => {
+    tnpbase
+      .post("/students/addToDrive", { data: this.state.driveToAdd })
+      .then(res => console.log(res))
       .catch(err => console.log(err));
   };
 
@@ -217,21 +259,98 @@ class FilterStudents extends React.Component {
               </select>
             </div>
           </div>
-          <div className="field">
-            <label>Branch</label>
-            <Multiselect
-              options={data}
-              onSelectOptions={res => this.setState({branch: res})}
-            />
+          <div className="two fields">
+            <div className="field">
+              <label>Branch</label>
+              <Multiselect
+                options={data}
+                onSelectOptions={res => this.setState({ branch: res })}
+              />
+            </div>
+            <div className="field">
+              <button
+                className="ui secondary button"
+                style={{ marginTop: "23px" }}
+                onClick={this.submitFilterDetails}
+              >
+                Filter
+              </button>
+            </div>
           </div>
-          <button
-            className="big ui secondary button"
-            style={{ margin: "0 auto", display: "block" }}
-            onClick={this.submitFilterDetails}
-          >
-            Filter
-          </button>
         </div>
+        <table className="ui celled structured striped compact table">
+          <thead style={{ textAlign: "center" }}>
+            <tr>
+              <th rowSpan={2}>SNO</th>
+              <th rowSpan={2}>Roll no.</th>
+              <th rowSpan={2}>Student Name</th>
+              <th colSpan={4}>Scores</th>
+              <th rowSpan={2}>Backlogs</th>
+              <th rowSpan={2}>Branch</th>
+              <th rowSpan={2}>Gender</th>
+              <th rowSpan={2}>YOP</th>
+              <th rowSpan={2}>
+                Already <br /> Selected?
+              </th>
+              <th rowSpan={2}>Phone No.</th>
+              <th rowSpan={2}>Email</th>
+            </tr>
+            <tr>
+              <th>Class 10</th>
+              <th>Class 12</th>
+              <th>Eamcet Rank</th>
+              <th>Btech(L)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.filteredStudents.length === 0 ? (
+              <tr style={{ textAlign: "center" }}>
+                <td colSpan={14}>
+                  <b>It's Lonely here!</b>
+                </td>
+              </tr>
+            ) : (
+              this.showFilteredStudents()
+            )}
+          </tbody>
+          <tfoot
+            className="full-width"
+            style={{
+              display: this.state.filteredStudents.length === 0 ? "none" : ""
+            }}
+          >
+            <tr>
+              <th colSpan={7}>
+                <form className="ui form">
+                  <div className="field">
+                    <label>Select Drive</label>
+                    <select
+                      className="ui dropdown"
+                      value={this.state.driveToAdd}
+                      onChange={e =>
+                        this.setState({ driveToAdd: e.target.value })
+                      }
+                    >
+                      <option value="">Select Drive</option>
+                      {this.state.allDrives.map(drive => {
+                        return <option value={drive.id}>{drive.name}</option>;
+                      })}
+                    </select>
+                  </div>
+                </form>
+              </th>
+              <th colSpan={7}>
+                <button
+                  className="ui small primary labeled icon button"
+                  onClick={this.addToDrive}
+                  style={{ margin: "0 auto", display: "block" }}
+                >
+                  <i className="user icon" /> Add to Drive
+                </button>
+              </th>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     );
   }
