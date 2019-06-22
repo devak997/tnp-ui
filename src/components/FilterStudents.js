@@ -63,19 +63,22 @@ class FilterStudents extends React.Component {
       isSelected: this.state.alreadySelected,
       year_of_passing: this.state.YOP
     };
-    console.log(data);
     tnpbase
       .post("/students/filter", { data })
       .then(res => {
-        this.setState({ filteredStudents: res.data });
+        this.setState({ filteredStudents: res.data.result });
+        this.getAllDrives();
       })
       .catch(err => console.log(err));
   };
 
   getAllDrives = () => {
     tnpbase
-      .get("/drives/all")
-      .then(res => this.setState({ driveToAdd: res.data }))
+      .get("/drives/upcoming")
+      .then(res => {
+        this.setState({ driveToAdd: res.data.result });
+        this.setState({allDrives:this.state.driveToAdd})
+    })
       .catch(err => console.log(err));
   };
 
@@ -83,20 +86,20 @@ class FilterStudents extends React.Component {
     return this.state.filteredStudents.map((student, i) => {
       return (
         <tr key={i}>
-          <td>1</td>
-          <td>{student.roll_number}</td>
-          <td>{student.name}</td>
+          <td>{i+1}</td>
+          <td>{student.HTNO}</td>
+          <td>{student.NAME}</td>
           <td>{student.class10_score}</td>
           <td>{student.class12_score}</td>
-          <td>{student.eamcet_rank}</td>
+          <td>{student.EAMCET_RANK}</td>
           <td>{student.btech_score}</td>
-          <td>{student.backlogs}</td>
-          <td>{student.branch}</td>
-          <td>{student.gender}</td>
-          <td>{student.yop}</td>
-          <td>{student.selected}</td>
-          <td>{student.mobile}</td>
-          <td>{student.email}</td>
+          <td>{student.BTECH_BACKLOGS}</td>
+          <td>{student.BRANCH_CODE}</td>
+          <td>{student.GENDER}</td>
+          <td>{student.YOP_BTECH}</td>
+          <td>{student.selection_status}</td>
+          <td>{student.PARENT_MOBILE }</td>
+          <td>{student.EMAIL}</td>
         </tr>
       );
     });
@@ -104,7 +107,7 @@ class FilterStudents extends React.Component {
 
   addToDrive = () => {
     tnpbase
-      .post("/students/addToDrive", { data: this.state.driveToAdd })
+      .post("/students/addToDrive", { data: this.state.driveToAdd,students:this.state.filteredStudents })
       .then(res => console.log(res))
       .catch(err => console.log(err));
   };
@@ -333,7 +336,7 @@ class FilterStudents extends React.Component {
                     >
                       <option value="">Select Drive</option>
                       {this.state.allDrives.map(drive => {
-                        return <option value={drive.id}>{drive.name}</option>;
+                        return <option value={drive.drive_id}>{drive.company}</option>;
                       })}
                     </select>
                   </div>

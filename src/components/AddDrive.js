@@ -38,7 +38,7 @@ class AddDrive extends React.Component {
       no_of_rounds: this.state.noOfRounds,
       round_id: roundNames
     };
-    console.log(data);
+
     tnpbase
       .post("/drives/add", { data })
       .then(() => console.log("data submitted"))

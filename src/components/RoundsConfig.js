@@ -76,7 +76,7 @@ class RoundsConfig extends React.Component {
       return (
         <tr key={i}>
           <td>{round.id}</td>
-          <td>{round.name}</td>
+          <td>{round.round_name}</td>
           <td>
             <button
               className="ui basic icon button"

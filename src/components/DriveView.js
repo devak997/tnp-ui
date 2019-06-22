@@ -23,8 +23,8 @@ class DriveView extends React.Component {
       .get("/passing/year")
       .then(response => {
         let data = [];
-        for (let i = 0; i < response.data.length; i++) {
-          data.push(response.data[i].passing_out_year);
+        for (let i = 0; i < response.data.result.length; i++) {
+          data.push(response.data.result[i].passing_out_year);
         }
         this.setState({ years: data });
       })
@@ -43,7 +43,7 @@ class DriveView extends React.Component {
 
   fetchOldDrives = () => {
     const data = { year: this.state.selectedVal};
-    tnpbase.post("/drives/olddrive", {data}).then((response) => this.setState({drives: response.data})).catch(err =>console.log(err) )
+    tnpbase.post("/drives/olddrive", {data}).then((response) => this.setState({drives: response.data.result})).catch(err =>console.log(err) )
   }
 
   deleteRound = (drive_id, round_id, noOfRounds) => {
@@ -61,13 +61,12 @@ class DriveView extends React.Component {
     tnpbase
       .get("/drives/upcoming")
       .then(response => {
-        console.log("In upcoming rounds");
         const status = [];
-        for (let count = 0; count < response.data.length; count++) {
+        for (let count = 0; count < response.data.result.length; count++) {
           status.push({ editable: false, showAddRound: false });
         }
         this.setState({
-          drives: response.data,
+          drives: response.data.result,
           upcomingDrivesStatus: status
         });
       })
