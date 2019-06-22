@@ -32,19 +32,22 @@ class DriveView extends React.Component {
   };
 
   getDrives = () => {
-    if(this.state.selectedVal === "") {
-      this.setState({isUpcoming: true});
+    if (this.state.selectedVal === "") {
+      this.setState({ isUpcoming: true });
       this.fetchUpcomingDrives();
     } else {
-      this.setState({isUpcoming: false, drives: []});
+      this.setState({ isUpcoming: false, drives: [] });
       this.fetchOldDrives();
     }
-  }
+  };
 
   fetchOldDrives = () => {
-    const data = { year: this.state.selectedVal};
-    tnpbase.post("/drives/olddrive", {data}).then((response) => this.setState({drives: response.data.result})).catch(err =>console.log(err) )
-  }
+    const data = { year: this.state.selectedVal };
+    tnpbase
+      .post("/drives/olddrive", { data })
+      .then(response => this.setState({ drives: response.data.result }))
+      .catch(err => console.log(err));
+  };
 
   deleteRound = (drive_id, round_id, noOfRounds) => {
     const data = { drive_id, round_id, noOfRounds };
@@ -215,7 +218,7 @@ class DriveView extends React.Component {
           </td>
           <td>{drive.type_of_drive}</td>
           <td>{drive.remarks}</td>
-          <td style={{display: this.state.isUpcoming ? "" : "none"}}>
+          <td style={{ display: this.state.isUpcoming ? "" : "none" }}>
             {this.state.showTickButtons ? (
               <div className="ui basic icon buttons">
                 <button
@@ -324,7 +327,9 @@ class DriveView extends React.Component {
                   );
                 })}
               </select>
-              <button className="ui secondary button" onClick={this.getDrives}>Get Drives</button>
+              <button className="ui secondary button" onClick={this.getDrives}>
+                Get Drives
+              </button>
             </div>
           </div>
         </div>
@@ -339,7 +344,9 @@ class DriveView extends React.Component {
               <th>Rounds</th>
               <th>Type</th>
               <th>Remarks</th>
-              <th style={{display: this.state.isUpcoming ? "" : "none"}}>Action</th>
+              <th style={{ display: this.state.isUpcoming ? "" : "none" }}>
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>{this.displayDrives()}</tbody>
