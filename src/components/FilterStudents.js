@@ -241,8 +241,8 @@ class FilterStudents extends React.Component {
                 onChange={e => this.setState({ gender: e.target.value })}
               >
                 <option value="all">All</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
               </select>
             </div>
             <div className="field">
@@ -343,7 +343,7 @@ class FilterStudents extends React.Component {
                       {this.state.allDrives.map(drive => {
                         return (
                           <option value={drive.drive_id}>
-                            {drive.company}
+                            {drive.company} - {new Date(drive.date_of_drive).toLocaleDateString('en-GB')}
                           </option>
                         );
                       })}
