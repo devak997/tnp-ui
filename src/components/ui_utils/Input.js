@@ -46,7 +46,7 @@ export const IconInput = ({
   label,
   iconName,
   customProps,
-  meta
+  meta,
 }) => {
   const showError = renderError(meta);
   return (

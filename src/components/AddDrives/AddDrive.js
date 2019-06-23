@@ -27,7 +27,7 @@ class AddDrive extends React.Component {
   render() {
     return (
       <div className="ui container">
-        <AddDriveForm />
+        <AddDriveForm submitForm={this.submitForm}/>
       </div>
     );
   }

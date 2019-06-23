@@ -12,7 +12,7 @@ const displaySelectRounds = props => {
   return tempArray.map((num, i) => {
     return (
       <Field
-        name={`round ${num + 1}`}
+        name={`round${num + 1}`}
         required
         label={`Round ${num + 1}`}
         component={Select}
@@ -34,7 +34,6 @@ const displaySelectRounds = props => {
 };
 
 const AddDriveForm = props => {
-  console.log(props);
   return (
     <form className="ui form" onSubmit={props.handleSubmit(props.submitForm)}>
       <h2 className="ui dividing header">Add Drive</h2>
@@ -46,6 +45,7 @@ const AddDriveForm = props => {
         label="Company Name"
         required
         iconName="briefcase"
+        normalize={value => value.toUpperCase()}
       />
       <Field
         component={DatePickerNew}
@@ -53,6 +53,7 @@ const AddDriveForm = props => {
         label="Drive Date"
         required
         iconName="calendar alternate outline"
+        normalize={value => new Date(value)}
       />
       <Field
         component={IconInput}
@@ -101,9 +102,8 @@ const validate = formValues => {
   }
 
   for(let i = 0; i<formValues.noOfRounds; i++) {
-    if(!formValues[`round${i}`]) {
-      console.log(`error ${i}`)
-      errors[`round${i}`] = "Select a round"
+    if(!formValues[`round${i+1}`]) {
+      errors[`round${i+1}`] = "Select a round"
     }
   }
 
