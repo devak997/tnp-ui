@@ -336,7 +336,7 @@ class FilterStudents extends React.Component {
                     >
                       <option value="">Select Drive</option>
                       {this.state.allDrives.map(drive => {
-                        return <option value={drive.drive_id}>{drive.company}</option>;
+                        return <option value={drive.drive_id}>{`${drive.company} ` + "-" +` ${new Date(drive.date_of_drive).toLocaleDateString("en-GB")}`}</option>;
                       })}
                     </select>
                   </div>
@@ -354,6 +354,8 @@ class FilterStudents extends React.Component {
             </tr>
           </tfoot>
         </table>
+        <br/>
+        <br/>
       </div>
     );
   }
