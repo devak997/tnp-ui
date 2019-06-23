@@ -56,6 +56,7 @@ export class Multiselect extends Component {
       case "3": return("MECH");
       case "1": return("CIVIL");
       case "2": return("EEE");
+      default: return("Unknown");
     }
   }
   returnChip() {

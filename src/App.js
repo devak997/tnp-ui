@@ -10,7 +10,7 @@ import AddStudentsDisplay from "./components/AddStudents";
 import FilterStudentsDisplay from "./components/FilterStudents";
 import SearchStudentDisplay from "./components/SearchStudent";
 
-import AddDriveDisplay from "./components/AddDrive";
+import AddDriveDisplay from "./components/AddDrives/AddDrive";
 import DriveViewDisplay from "./components/DriveView";
 import RoundsConfigDisplay from "./components/RoundsConfig";
 

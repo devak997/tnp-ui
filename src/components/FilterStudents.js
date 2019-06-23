@@ -245,7 +245,7 @@ class FilterStudents extends React.Component {
                 <option value="female">Female</option>
               </select>
             </div>
-            <div className="field">
+            <div className="required field">
               <label>Year of Passing</label>
               <input
                 type="number"
@@ -268,7 +268,7 @@ class FilterStudents extends React.Component {
             </div>
           </div>
           <div className="two fields">
-            <div className="field">
+            <div className="required field">
               <label>Branch</label>
               <Multiselect
                 options={data}
@@ -286,7 +286,7 @@ class FilterStudents extends React.Component {
             </div>
           </div>
         </div>
-        <table className="ui celled structured striped compact table">
+        <table className="ui blue celled structured striped compact table">
           <thead style={{ textAlign: "center" }}>
             <tr>
               <th rowSpan={2}>SNO</th>
@@ -353,7 +353,9 @@ class FilterStudents extends React.Component {
               </th>
               <th colSpan={7}>
                 <button
-                  className="ui small primary labeled icon button"
+                  className={`ui small primary labeled icon button ${
+                    this.state.driveToAdd===""? "disabled" : ""
+                  }`}
                   onClick={this.addToDrive}
                   style={{ margin: "0 auto", display: "block" }}
                 >
