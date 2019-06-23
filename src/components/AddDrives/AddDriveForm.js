@@ -114,6 +114,7 @@ const validate = formValues => {
 export default connect(mapStateToProps)(
   reduxForm({
     form: "addDriveForm",
+    // @ts-ignore
     validate: validate,
     initialValues: {
       noOfRounds: 4,
