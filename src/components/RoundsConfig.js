@@ -9,20 +9,19 @@ class RoundsConfig extends React.Component {
   addRound = () => {
     console.log(typeof {data:this.state.round});
     tnpbase
-      .put("/round/add", { data: this.state.round })
-      .then(() => {
-        this.setState({ showForm: false });
+      .post("/round/add", { data: this.state.round })
+      .then((res) => {
         this.props.FetchRounds();
+        this.setState({ showForm: false , round : "" });
       })
       .catch(err => console.log(err));
   };
 
   deleteRound = data => {
-    console.log(typeof {id:data});
-    data ={ id:data }
+    console.log(data);
     tnpbase
-      .post("/rounds/delete",data )
-      .then(() => this.props.FetchPosts())
+      .post("/rounds/delete",data)
+      .then(() => this.props.FetchRounds())
       .catch(err => console.log(err));
   };
 
@@ -51,7 +50,8 @@ class RoundsConfig extends React.Component {
             </button>
             <button
               className="ui button"
-              onClick={() => this.setState({ showForm: false })}
+              onClick={() => {
+                this.setState({ showForm: false , round :"" })}}
             >
               <i className="x icon" />
             </button>
@@ -80,7 +80,7 @@ class RoundsConfig extends React.Component {
           <td>
             <button
               className="ui basic icon button"
-              onClick={() => this.props.deleteRound(round)}
+              onClick={() => this.deleteRound(round)}
             >
               <i className="trash icon" />
             </button>
@@ -100,7 +100,7 @@ class RoundsConfig extends React.Component {
         <button
           className="ui right floated secondary button"
           style={{ margin: "5px" }}
-          onClick={() => this.setState({ showForm: !this.state.showForm })}
+          onClick={() => this.setState({ showForm: !this.state.showForm  , round : ""})}
         >
           Add Round
         </button>

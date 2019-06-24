@@ -11,6 +11,8 @@ class Page extends React.Component {
     date: null,
     studentDetails: [],
     values: ["P", "A"],
+    selectionStatus :["Selected","Not Selected"],
+    offerStatus :["Submitted" , "Not Submitted"],
     detailEdit: []
   };
 
@@ -37,20 +39,21 @@ class Page extends React.Component {
               drive_id: this.state.drive_id,
               HTNO: this.state.studentDetails[i].HTNO,
               round_name: this.state.studentDetails[i].round_name,
-              attendanceStatus: this.state.studentDetails[i].attendance_status
+              attendanceStatus: this.state.studentDetails[i].attendance_status,
+              selected : this.state.studentDetails[i].selected,
+              offer_letter : this.state.studentDetails[i].offer_letter
             };
             tnpbase
               .post("/drives/performance/editDetail", data)
               .then(result => {
                 let ups = this.state.detailEdit;
                 ups[i].editStatus = !ups[i].editStatus;
-                ups[i].initialRoundName = this.state.studentDetails[
-                  i
-                ].round_name;
-                ups[i].initialAttendanceStatus = this.state.studentDetails[
-                  i
-                ].attendance_status;
-                this.setState({ studentDetails: result.data, detailEdit: ups });
+                ups[i].initialRoundName = this.state.studentDetails[i].round_name;
+                ups[i].initialAttendanceStatus = this.state.studentDetails[i].attendance_status;
+                ups[i].initialSelectStatus = this.state.studentDetails[i].selected;
+                ups[i].initialOfferStatus = this.state.studentDetails[i].offer_letter;
+                this.getDrives();
+                this.setState({detailEdit: ups });
               });
           }}
         >
@@ -62,8 +65,9 @@ class Page extends React.Component {
             let ups = this.state.detailEdit;
             ups[i].editStatus = !ups[i].editStatus;
             this.state.studentDetails[i].round_name = ups[i].initialRoundName;
-            this.state.studentDetails[i].attendance_status =
-              ups[i].initialAttendanceStatus;
+            this.state.studentDetails[i].attendance_status = ups[i].initialAttendanceStatus;
+            this.state.studentDetails[i].selected = ups[i].initialSelectStatus;
+            this.state.studentDetails[i].offer_letter = ups[i].initialOfferStatus;
             this.setState({ detailEdit: ups });
           }}
         >
@@ -91,7 +95,7 @@ class Page extends React.Component {
     if (this.state.studentDetails.length === 0) {
       return (
         <tr>
-          <td colSpan={4}>It's Lonely Here</td>
+          <td colSpan={6}>It's Lonely Here</td>
         </tr>
       );
     }
@@ -105,7 +109,6 @@ class Page extends React.Component {
                 className="ui search dropdown"
                 defaultValue={number.round_name}
                 onChange={e => {
-                  console.log("Selected val, directly" + e.target.value);
                   number.round_name = e.target.value;
                 }}
               >
@@ -134,6 +137,40 @@ class Page extends React.Component {
               number.attendance_status
             )}
           </td>
+          <td>
+            {this.state.detailEdit[i].editStatus ? (
+              <select
+              className="ui search dropdown"
+              defaultValue = {number.selected}
+              onChange={e => {
+                number.selected = e.target.value;
+              }}
+              >
+                {this.state.selectionStatus.map(selection =>(
+                  <option value={selection}>{selection}</option>
+                ))}
+              </select>
+            ):(
+              number.selected
+            )}
+          </td>
+          <td>
+          {this.state.detailEdit[i].editStatus ? (
+              <select
+              className="ui search dropdown"
+              defaultValue = {number.offer_letter}
+              onChange={e => {
+                number.offer_letter = e.target.value;
+              }}
+              >
+                {this.state.offerStatus.map(selection =>(
+                  <option value={selection}>{selection}</option>
+                ))}
+              </select>
+            ):(
+              number.offer_letter
+            )}
+          </td>
           <td>{this.buttonHandle(i)}</td>
         </tr>
       );
@@ -151,7 +188,9 @@ class Page extends React.Component {
           this.state.detailEdit.push({
             editStatus: false,
             initialRoundName: response.data.students[i].round_name,
-            initialAttendanceStatus: response.data.students[i].attendance_status
+            initialAttendanceStatus: response.data.students[i].attendance_status,
+            initialSelectStatus : response.data.students[i].selected,
+            initialOfferStatus : response.data.students[i].offer_letter
           });
         }
         this.setState({
@@ -162,12 +201,12 @@ class Page extends React.Component {
       .catch(err => {
         console.log(err);
       });
-    console.log(data);
   };
   render() {
     let driveMenu = this.state.drives.map(drives => (
       <option value={drives.drive_id}>{drives.company}</option>
     ));
+                
     return (
       <div>
         <h1>Drive Performance</h1>
@@ -178,7 +217,6 @@ class Page extends React.Component {
             dateFormat="dd/MM/yyyy"
             selected={this.state.date}
             onChange={dateDetail => {
-              console.log(this.state.date);
               this.getDrives(dateDetail);
               this.setState({ date: dateDetail });
             }}
@@ -209,6 +247,8 @@ class Page extends React.Component {
                   <th>Roll No.</th>
                   <th>Round Name</th>
                   <th>Attendance</th>
+                  <th>Selected</th>
+                  <th>Offer Letter</th>
                   <th>Action</th>
                 </tr>
               </thead>
