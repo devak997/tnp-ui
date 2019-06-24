@@ -7,8 +7,9 @@ const renderError = ({ error, touched }) => {
   return false;
 };
 
-export const Select = ({ children, input, required, label, meta }) => {
+export const Select = ({ children, input, required, label, meta, defaultValue, className, style }) => {
   const showError = renderError(meta);
+  const modifiedInput = {...input, value: input.value || defaultValue}
   return (
     <div
       className={`${required ? "required" : ""} field ${
@@ -16,7 +17,7 @@ export const Select = ({ children, input, required, label, meta }) => {
       }`}
     >
       <label>{label}</label>
-      <select {...input}>{children}</select>
+      <select className={className} {...modifiedInput} style={style}>{children}</select>
       <div style={{ display: showError ? "" : "none" }}>{meta.error}</div>
     </div>
   );
