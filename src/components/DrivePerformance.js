@@ -63,12 +63,13 @@ class Page extends React.Component {
           className="ui  button"
           onClick={() => {
             let ups = this.state.detailEdit;
+            let students = this.state.studentDetails;
             ups[i].editStatus = !ups[i].editStatus;
-            this.state.studentDetails[i].round_name = ups[i].initialRoundName;
-            this.state.studentDetails[i].attendance_status = ups[i].initialAttendanceStatus;
-            this.state.studentDetails[i].selected = ups[i].initialSelectStatus;
-            this.state.studentDetails[i].offer_letter = ups[i].initialOfferStatus;
-            this.setState({ detailEdit: ups });
+            students[i].round_name = ups[i].initialRoundName;
+            students[i].attendance_status = ups[i].initialAttendanceStatus;
+            students[i].selected = ups[i].initialSelectStatus;
+            students[i].offer_letter = ups[i].initialOfferStatus;
+            this.setState({ detailEdit: ups , studentDetails : students });
           }}
         >
           <i className="x icon" />
