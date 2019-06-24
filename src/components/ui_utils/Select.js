@@ -21,3 +21,34 @@ export const Select = ({ children, input, required, label, meta }) => {
     </div>
   );
 };
+
+export const ActionSelect = ({
+  children,
+  input,
+  required,
+  label,
+  meta,
+  iconName,
+  buttonText,
+  onButtonClick
+}) => {
+  const showError = renderError(meta);
+  return (
+    <div
+      className={`${required ? "required" : ""} field ${
+        showError ? "error" : ""
+      }`}
+    >
+      <label>
+        <i className={`${iconName} icon`} />
+        {label}
+      </label>
+      <div className="ui fluid action input">
+        <select {...input}>{children}</select>
+        <button className="ui secondary button" onClick={() => onButtonClick(input.value)}>
+          {buttonText}
+        </button>
+      </div>
+    </div>
+  );
+};

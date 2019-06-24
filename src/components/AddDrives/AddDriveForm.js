@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Field, reduxForm, formValueSelector } from "redux-form";
 import { IconInput, DatePickerNew, CheckBox, Select } from "../ui_utils/";
 
-
 const displaySelectRounds = props => {
   let tempArray = [];
   for (let i = 0; i < props.noOfRounds; i++) {
@@ -76,7 +75,12 @@ const AddDriveForm = props => {
         iconName="exclamation"
         component={IconInput}
       />
-      <button className={`large blue ui labeled icon button ${props.valid ? "" : "disabled"}`} type="submit">
+      <button
+        className={`large blue ui labeled icon button ${
+          props.valid ? "" : "disabled"
+        }`}
+        type="submit"
+      >
         <i className="paper plane icon" />
         Submit
       </button>
@@ -93,23 +97,22 @@ const mapStateToProps = state => {
 
 const validate = formValues => {
   const errors = {};
-  if(!formValues.companyName) {
-    errors.companyName = "Please enter a name"
+  if (!formValues.companyName) {
+    errors.companyName = "Please enter a name";
   }
 
-  if(!formValues.noOfRounds) {
-    errors.noOfRounds = "Enter number of rounds (2 to 8)"
+  if (!formValues.noOfRounds) {
+    errors.noOfRounds = "Enter number of rounds (2 to 8)";
   }
 
-  for(let i = 0; i<formValues.noOfRounds; i++) {
-    if(!formValues[`round${i+1}`]) {
-      errors[`round${i+1}`] = "Select a round"
+  for (let i = 0; i < formValues.noOfRounds; i++) {
+    if (!formValues[`round${i + 1}`]) {
+      errors[`round${i + 1}`] = "Select a round";
     }
   }
 
   return errors;
- 
-}
+};
 
 export default connect(mapStateToProps)(
   reduxForm({

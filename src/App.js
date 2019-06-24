@@ -11,7 +11,7 @@ import FilterStudentsDisplay from "./components/FilterStudents";
 import SearchStudentDisplay from "./components/SearchStudent";
 
 import AddDriveDisplay from "./components/AddDrives/AddDrive";
-import DriveViewDisplay from "./components/DriveView";
+import DriveViewDisplay from "./components/AddDrives/DriveView";
 import RoundsConfigDisplay from "./components/RoundsConfig";
 
 import DriveAttendanceDisplay from "./components/DriveAttendance";
@@ -22,7 +22,7 @@ import TestPerformaceDisplay from "./components/TestPerformace";
 
 import tnpbase from "./api/tnpbase";
 
-import { FetchRounds } from "./actions";
+import { fetchRounds, fetchYears } from "./actions";
 
 import "./App.css";
 import { connect } from "react-redux";
@@ -50,7 +50,8 @@ class App extends React.Component {
   };
 
   componentDidMount = () => {
-    this.props.FetchRounds();
+    this.props.fetchRounds();
+    this.props.fetchYears();
   }
 
   render() {
@@ -102,4 +103,4 @@ class App extends React.Component {
 }
 
 
-export default connect(null, {FetchRounds})(App);
+export default connect(null, {fetchRounds, fetchYears })(App);
