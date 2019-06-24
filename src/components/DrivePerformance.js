@@ -227,7 +227,7 @@ class Page extends React.Component {
               <div className="sub header">Student Performance</div>
             </div>
           </h3>
-        </div>
+        
         <div className="ui form">
           <label>Select Date :</label>
           <br/>
@@ -255,6 +255,7 @@ class Page extends React.Component {
           <button className="ui button" onClick={this.enableTable}>
             <i className="check icon" />
           </button>
+        </div>
         </div>
         <div>
           <br />
