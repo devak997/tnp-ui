@@ -11,7 +11,7 @@ import FilterStudentsDisplay from "./components/FilterStudents";
 import SearchStudentDisplay from "./components/SearchStudent";
 
 import AddDriveDisplay from "./components/AddDrives/AddDrive";
-import DriveViewDisplay from "./components/AddDrives/DriveView";
+import DriveViewDisplay from "./components/DrivesView/DriveView";
 import RoundsConfigDisplay from "./components/RoundsConfig";
 
 import DriveAttendanceDisplay from "./components/DriveAttendance";

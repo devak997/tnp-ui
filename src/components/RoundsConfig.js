@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { FetchRounds } from "../actions/";
+import { fetchRounds } from "../actions/";
 import tnpbase from "../api/tnpbase";
 
 class RoundsConfig extends React.Component {
@@ -11,7 +11,7 @@ class RoundsConfig extends React.Component {
     tnpbase
       .post("/round/add", { data: this.state.round })
       .then((res) => {
-        this.props.FetchRounds();
+        this.props.fetchRounds();
         this.setState({ showForm: false , round : "" });
       })
       .catch(err => console.log(err));
@@ -21,7 +21,7 @@ class RoundsConfig extends React.Component {
     console.log(data);
     tnpbase
       .post("/rounds/delete",data)
-      .then(() => this.props.FetchRounds())
+      .then(() => this.props.fetchRounds())
       .catch(err => console.log(err));
   };
 
@@ -91,7 +91,7 @@ class RoundsConfig extends React.Component {
   };
 
   componentDidMount = () => {
-    this.props.FetchRounds();
+    this.props.fetchRounds();
   };
 
   render() {
@@ -130,5 +130,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { FetchRounds }
+  { fetchRounds }
 )(RoundsConfig);

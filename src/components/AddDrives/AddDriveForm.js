@@ -34,7 +34,7 @@ const displaySelectRounds = props => {
 
 const AddDriveForm = props => {
   return (
-    <form className="ui form" onSubmit={props.handleSubmit(props.submitForm)}>
+    <form className="ui form" onSubmit={props.handleSubmit(props.mySubmitForm)}>
       <h2 className="ui dividing header">Add Drive</h2>
       <Field
         component={IconInput}

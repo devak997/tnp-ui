@@ -237,7 +237,7 @@ const mapStateToProps = state => {
     setEditDrive: state.setEditDrive,
     years: state.driveYears,
     drives: state.drives,
-    driveYear: formValueSelector(state)("driveYear")
+    driveYear: formValueSelector("driveViewForm")(state,"driveYear")
   };
 };
 
@@ -246,6 +246,6 @@ export default connect(
   { fetchDrives }
 )(
   reduxForm({
-    form: "addDriveForm"
+    form: "driveViewForm"
   })(DriveViewForm)
 );

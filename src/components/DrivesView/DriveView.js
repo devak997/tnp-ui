@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import tnpbase from "../../api/tnpbase";
-import DriveViewForm from "./AddDriveForm";
+import DriveViewForm from "./DriveViewForm"
 
 const deleteRound = (drive_id, round_id, noOfRounds) => {
   const data = { drive_id, round_id, noOfRounds };
