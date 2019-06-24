@@ -108,7 +108,7 @@ const displayDriveRounds = (props, driveIndex, drive) => {
 
 const displayButtons = (props, driveIndex, drive) => {
   return (
-    <td style={{ display: props.driveYear==="" ? "" : "none" }}>
+    <td style={{ display: props.driveYear === "" ? "" : "none" }}>
       {props.showTickButtons ? (
         <div className="ui basic icon buttons">
           <button
@@ -200,14 +200,14 @@ const DriveViewForm = props => {
           buttonText="Get Drives"
           onButtonClick={props.fetchDrives}
         >
-          <option value="">Upcoming drives</option>
-          {props.years.map((year, i) => {
-            return (
-              <option key={i} value={year}>
-                {year}
-              </option>
-            );
-          })}
+            <option value="">Upcoming drives</option>
+            {props.years.map((year, i) => {
+              return (
+                <option key={i} value={year.passing_out_year}>
+                  {year.passing_out_year}
+                </option>
+              );
+            })}
         </Field>
       </div>
       <br />
@@ -237,7 +237,7 @@ const mapStateToProps = state => {
     setEditDrive: state.setEditDrive,
     years: state.driveYears,
     drives: state.drives,
-    driveYear: formValueSelector("driveViewForm")(state,"driveYear")
+    driveYear: formValueSelector("driveViewForm")(state, "driveYear")
   };
 };
 

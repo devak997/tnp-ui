@@ -61,7 +61,7 @@ const handleSetEditDrive = (state = "", action) => {
 const fetchYearReducer = (state = [], action) => {
   switch(action.type) {
     case "FETCH_YEARS":
-      return action.payload;
+      return action.data;
     default:
       return state;
   }
