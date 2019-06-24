@@ -15,8 +15,7 @@ class Page extends React.Component {
   };
 
   getDrives = dateDetail => {
-    let data = { date: new Date(dateDetail).toLocaleDateString("en-GB") };
-    console.log(data);
+    const data = { date: new Date(dateDetail).toLocaleDateString("en-GB") };
     tnpbase
       .post("/drives/drivesList", data)
       .then(response => {
@@ -27,7 +26,6 @@ class Page extends React.Component {
       });
   };
 
-
   buttonHandle = i =>
     this.state.detailEdit[i].editStatus ? (
       <div className="ui basic icon buttons">
@@ -36,17 +34,24 @@ class Page extends React.Component {
           style={{ margin: "5px" }}
           onClick={() => {
             let data = {
+              drive_id: this.state.drive_id,
               HTNO: this.state.studentDetails[i].HTNO,
               round_name: this.state.studentDetails[i].round_name,
-              attendanceStatus : this.state.studentDetails[i].attendance_status
+              attendanceStatus: this.state.studentDetails[i].attendance_status
             };
             tnpbase
-             .post("/drives/performance/editDetail", data)
-             .then((result)=>{
-               let ups = this.state.detailEdit;
-               ups[i].editStatus = ! ups[i].editStatus;
-               this.setState({studentDetails : result.data , detailEdit : ups});
-             })
+              .post("/drives/performance/editDetail", data)
+              .then(result => {
+                let ups = this.state.detailEdit;
+                ups[i].editStatus = !ups[i].editStatus;
+                ups[i].initialRoundName = this.state.studentDetails[
+                  i
+                ].round_name;
+                ups[i].initialAttendanceStatus = this.state.studentDetails[
+                  i
+                ].attendance_status;
+                this.setState({ studentDetails: result.data, detailEdit: ups });
+              });
           }}
         >
           <i className="check icon" />
@@ -57,8 +62,9 @@ class Page extends React.Component {
             let ups = this.state.detailEdit;
             ups[i].editStatus = !ups[i].editStatus;
             this.state.studentDetails[i].round_name = ups[i].initialRoundName;
-            this.state.studentDetails[i].attendance_status = ups[i].initialAttendanceStatus;
-            this.setState({detailEdit : ups});
+            this.state.studentDetails[i].attendance_status =
+              ups[i].initialAttendanceStatus;
+            this.setState({ detailEdit: ups });
           }}
         >
           <i className="x icon" />
@@ -72,9 +78,8 @@ class Page extends React.Component {
           onClick={() => {
             let ups = this.state.detailEdit;
             ups[i].editStatus = !ups[i].editStatus;
-            this.setState({detailEdit : ups});
-          }
-        }
+            this.setState({ detailEdit: ups });
+          }}
         >
           <i className="pencil alternate icon" />
           Edit
@@ -83,7 +88,7 @@ class Page extends React.Component {
     );
 
   tableData = () => {
-    if(this.state.studentDetails.length === 0) {
+    if (this.state.studentDetails.length === 0) {
       return (
         <tr>
           <td colSpan={4}>It's Lonely Here</td>
@@ -98,10 +103,10 @@ class Page extends React.Component {
             {this.state.detailEdit[i].editStatus ? (
               <select
                 className="ui search dropdown"
-                defaultValue={number.roundName}
+                defaultValue={number.round_name}
                 onChange={e => {
                   console.log("Selected val, directly" + e.target.value);
-                  number.roundName = e.target.value;
+                  number.round_name = e.target.value;
                 }}
               >
                 {this.state.rounds.map(round => (
@@ -149,7 +154,10 @@ class Page extends React.Component {
             initialAttendanceStatus: response.data.students[i].attendance_status
           });
         }
-        this.setState({ studentDetails: response.data.students , rounds : response.data.rounds });
+        this.setState({
+          studentDetails: response.data.students,
+          rounds: response.data.rounds
+        });
       })
       .catch(err => {
         console.log(err);
