@@ -1,16 +1,18 @@
 import React from "react";
 import tnpbase from "../api/tnpbase";
-import { connect} from "react-redux";
+import { connect } from "react-redux";
 import {
   ActionInput,
   Select,
   SelectActionInput,
   Input,
-  ModifiedMultiSelect,
+  ModifiedMultiSelect
 } from "./ui_utils";
 
-import { fetchDrives } from "../actions/"
+import ErrorDisplay from "./ui_utils/ErrorDisplay";
+import { fetchDrives } from "../actions/";
 import { Field, reduxForm } from "redux-form";
+import SuccessMessage from "./ui_utils/SuccessMessage";
 
 const data = [
   {
@@ -41,15 +43,79 @@ const data = [
 
 class FilterStudents extends React.Component {
   state = {
-    driveToAdd: "", filteredStudents : []
+    driveToAdd: "",
+    filteredStudents: [],
+    loading: false,
+    error: "",
+    message: "",
+    additionalMsg: "",
+    submitted: false,
+    addToDriveClicked: false
   };
 
   componentDidUpdate = () => {
     this.props.fetchDrives("upcoming");
-  }
+  };
+
+  handleXClick = () => {
+    this.setState({ submitted: false });
+  };
+
+  handleXClickFilter = () => {
+    this.setState({ addToDriveClicked: false });
+  };
+
+  displayStatus = () => {
+    if (this.state.submitted) {
+      if (this.state.loading) {
+        return (
+          <h3 style={{ textAlign: "center", color: "b#4ba5d8ue" }}>
+            ...Loading...
+          </h3>
+        );
+      } else if (this.state.error !== "") {
+        return (
+          <ErrorDisplay
+            headerData={this.state.error}
+            message={this.state.message}
+            showTry={false}
+            handleXClick={this.handleXClick}
+          />
+        );
+      }
+    }
+  };
+
+  displayFilterStatus = () => {
+    if (this.state.addToDriveClicked) {
+      if (this.state.loading) {
+        return (
+          <h3 style={{ textAlign: "center", color: "b#4ba5d8ue" }}>
+            ...Loading...
+          </h3>
+        );
+      } else if (this.state.error !== "") {
+        return (
+          <ErrorDisplay
+            headerData={this.state.error}
+            message={this.state.message}
+            showTry={false}
+            handleXClick={this.handleXClickFilter}
+          />
+        );
+      } else {
+        return (
+          <SuccessMessage
+            message={this.state.message}
+            handleXClick={this.handleXClickFilter}
+          />
+        );
+      }
+    }
+  };
 
   submitFilterDetails = formValues => {
-    console.log(formValues);
+    this.setState({ submitted: true, loading: true });
     const data = {
       btech_score: parseInt(formValues.btechScore),
       btech_score_type: formValues.btechScoreType,
@@ -57,9 +123,9 @@ class FilterStudents extends React.Component {
       backlogs: parseInt(formValues.backlogs),
       class12_score: parseInt(formValues.class12Score),
       class12_score_type: formValues.class12ScoreType,
-      class10_score: parseInt(formValues.class10Score) ,
+      class10_score: parseInt(formValues.class10Score),
       class10_score_type: formValues.class10ScoreType,
-      eamcet_rank: parseInt(formValues.eamcetRank) || Infinity ,
+      eamcet_rank: parseInt(formValues.eamcetRank),
       gender: formValues.gender,
       isSelected: formValues.allowSelected,
       year_of_passing: parseInt(formValues.yop)
@@ -67,9 +133,25 @@ class FilterStudents extends React.Component {
     tnpbase
       .post("/students/filter", { data })
       .then(res => {
-        this.setState({ filteredStudents: res.data.result });
+        if (res.status === 200) {
+          this.setState({
+            filteredStudents: res.data.result,
+            message: res.data.status,
+            loading: false,
+            error: ""
+          });
+        } else {
+          this.setState({ error: res.data.status, message: res.data.error });
+        }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          error: "Unable to filter students!",
+          message: err.message,
+          loading: false
+        });
+      });
   };
 
   showFilteredStudents = () => {
@@ -96,6 +178,7 @@ class FilterStudents extends React.Component {
   };
 
   addToDrive = () => {
+    this.setState({ addToDriveClicked: true, loading: true });
     const data = {
       driveToAdd: this.state.driveToAdd,
       students: this.state.filteredStudents
@@ -104,8 +187,24 @@ class FilterStudents extends React.Component {
       .post("/students/addToDrive", {
         data
       })
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+      .then(res => {
+        if (res.status === 200) {
+          this.setState({
+            message: res.data.status,
+            loading: false
+          });
+        } else {
+          this.setState({ error: res.data.status, message: res.data.error });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          error: "Unable to addd to drive!",
+          message: err.message,
+          loading: false
+        });
+      });
   };
 
   render() {
@@ -147,9 +246,9 @@ class FilterStudents extends React.Component {
             <Field
               name="class12Score"
               type="number"
-              label="class 12 Score"
+              label="Class 12 Score"
               component={ActionInput}
-              placeholder="Btech Score"
+              placeholder="Class 12 Score"
             >
               <Field
                 name="class12ScoreType"
@@ -225,16 +324,18 @@ class FilterStudents extends React.Component {
               data={data}
               label="Branch"
             />
-            <div className="field">
-              <button
-                className={`ui secondary button ${this.props.valid ? "" : "disabled"}`}
-                style={{ marginTop: "23px" }}
-                onClick={this.props.handleSubmit(this.submitFilterDetails)}
-              >
-                Filter
-              </button>
+            <div className="field" style={{ marginTop: "10px" }}>
+              {this.displayStatus()}
             </div>
           </div>
+          <button
+            className={`ui secondary button ${
+              this.props.valid ? "" : "disabled"
+            }`}
+            onClick={this.props.handleSubmit(this.submitFilterDetails)}
+          >
+            Filter
+          </button>
         </div>
         <table className="ui blue celled structured striped compact table">
           <thead style={{ textAlign: "center" }}>
@@ -314,6 +415,7 @@ class FilterStudents extends React.Component {
                 >
                   <i className="user icon" /> Add to Drive
                 </button>
+                {this.displayFilterStatus()}
               </th>
             </tr>
           </tfoot>
@@ -327,44 +429,62 @@ class FilterStudents extends React.Component {
 
 const validate = formValues => {
   const errors = {};
-  if((!(formValues.btechScore >= 5 && formValues.btechScore<=10)) && formValues.btechScoreType==="cgpa" ) {
-    errors.btechScore = "CGPA must be between 5 and 10"
+  if (
+    !(formValues.btechScore >= 5 && formValues.btechScore <= 10) &&
+    formValues.btechScoreType === "cgpa"
+  ) {
+    errors.btechScore = "CGPA must be between 5 and 10";
   }
-  if((!(formValues.btechScore >= 50 && formValues.btechScore<=100)) && formValues.btechScoreType==="percentage" ) {
-    errors.btechScore = "Percentage must be between 5 and 10"
+  if (
+    !(formValues.btechScore >= 50 && formValues.btechScore <= 100) &&
+    formValues.btechScoreType === "percentage"
+  ) {
+    errors.btechScore = "Percentage must be between 50 and 100";
   }
-  if((!(formValues.class12Score >= 5 && formValues.class12Score<=10)) && formValues.class12ScoreType==="cgpa" ) {
-    errors.class12Score = "CGPA must be between 5 and 10"
+  if (
+    !(formValues.class12Score >= 5 && formValues.class12Score <= 10) &&
+    formValues.class12ScoreType === "cgpa"
+  ) {
+    errors.class12Score = "CGPA must be between 5 and 10";
   }
-  if((!(formValues.class12Score >= 50 && formValues.class12Score<=100)) && formValues.class12ScoreType==="percentage" ) {
-    errors.class12Score = "Percentage must be between 5 and 10"
+  if (
+    !(formValues.class12Score >= 50 && formValues.class12Score <= 100) &&
+    formValues.class12ScoreType === "percentage"
+  ) {
+    errors.class12Score = "Percentage must be between 50 and 100";
   }
-  if((!(formValues.class10Score >= 5 && formValues.class10Score<=10)) && formValues.class10ScoreType==="cgpa" ) {
-    errors.class10Score = "CGPA must be between 5 and 10"
+  if (
+    !(formValues.class10Score >= 5 && formValues.class10Score <= 10) &&
+    formValues.class10ScoreType === "cgpa"
+  ) {
+    errors.class10Score = "CGPA must be between 5 and 10";
   }
-  if((!(formValues.class10Score >= 50 && formValues.class10Score<=100)) && formValues.class10ScoreType==="percentage" ) {
-    errors.class10Score = "Percentage must be between 5 and 10"
+  if (
+    !(formValues.class10Score >= 50 && formValues.class10Score <= 100) &&
+    formValues.class10ScoreType === "percentage"
+  ) {
+    errors.class10Score = "Percentage must be between 50 and 100";
   }
-  if(!formValues.yop) {
-    errors.yop = "Please enter YOP"
+  if (!formValues.yop) {
+    errors.yop = "Please enter YOP";
   }
-  if(formValues.selectedBranches) {
-    if(formValues.selectedBranches.length === 0) {
-      errors.selectedBranches = "Please select atleast one branch"
+  if (formValues.selectedBranches) {
+    if (formValues.selectedBranches.length === 0) {
+      errors.selectedBranches = "Please select atleast one branch";
     }
   }
   return errors;
-}
+};
 
 const mapStateToProps = state => {
-  return{
+  return {
     allDrives: state.drives
   };
-}
+};
 
 export default connect(
   mapStateToProps,
-  { fetchDrives}
+  { fetchDrives }
 )(
   reduxForm({
     form: "filterStudents",
@@ -377,15 +497,9 @@ export default connect(
       class12Score: 0,
       selectedBranches: [],
       gender: "all",
-      allowSelected: "yes"
+      allowSelected: "yes",
+      eamcetRank: null
     },
     validate
   })(FilterStudents)
 );
-
-// export default connect(mapStateToProps, {fetchDrives} )(reduxForm({
-//   form: "filterStudents",
- 
-//   },
-//   validate
-// }))(FilterStudents);

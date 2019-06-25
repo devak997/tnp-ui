@@ -2,26 +2,38 @@ import React from "react";
 import { connect } from "react-redux";
 import tnpbase from "../../api/tnpbase";
 import DriveViewForm from "./DriveViewForm";
-import { fetchDrives, setEditDriveAction, setAddRoundAction } from "../../actions";
+import {
+  fetchDrives,
+  setEditDriveAction,
+  setAddRoundAction
+} from "../../actions";
 
 class DriveView extends React.Component {
   deleteRound = (drive_id, round_id, noOfRounds, driveYear) => {
     const data = { drive_id, round_id, noOfRounds };
     tnpbase
       .post("/drives/rounds/delete", { data })
-      .then(() => {
-        this.props.fetchDrives(driveYear);
+      .then(res => {
+        if (res.status === 200) {
+          this.props.fetchDrives(driveYear);
+        } else {
+          window.alert(`Error: ${res.data.status} \n ${res.data.error}`);
+        }
       })
-      .catch(err => console.log(err));
+      .catch(err => window.alert(`Error: ${err.message}`));
   };
 
   deleteDrive = (drive, driveYear) => {
     tnpbase
       .post("/drives/delete", { data: drive })
-      .then(() => {
-        this.props.fetchDrives(driveYear);
+      .then(res => {
+        if (res.status === 200) {
+          this.props.fetchDrives(driveYear);
+        } else {
+          window.alert(`Error: ${res.data.status} \n ${res.data.error}`);
+        }
       })
-      .catch(err => console.log(err));
+      .catch(err => window.alert(`Error: ${err.message}`));
   };
 
   submitData = (formValues, drive_id, year) => {
@@ -42,12 +54,16 @@ class DriveView extends React.Component {
     };
     tnpbase
       .post("/drives/modify", { data })
-      .then(() => {
-        this.props.fetchDrives(year);
-        this.props.setAddRoundAction(-1);
-        this.props.setEditDriveAction(-1);
+      .then((res) => {
+        if (res.status === 200) {
+          this.props.fetchDrives(year);
+          this.props.setAddRoundAction(-1);
+          this.props.setEditDriveAction(-1);
+        } else {
+          window.alert(`Error: ${res.data.status} \n ${res.data.error}`);
+        }
       })
-      .catch(err => console.log(err));
+      .catch(err => window.alert(`Error: ${err.message}`));
   };
   render() {
     return (
@@ -70,5 +86,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchDrives, setAddRoundAction,setEditDriveAction }
+  { fetchDrives, setAddRoundAction, setEditDriveAction }
 )(DriveView);
