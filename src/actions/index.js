@@ -58,9 +58,9 @@ export const fetchYears = () => async dispatch => {
 }
 
 export const setDefaultValues = (date, rounds) => {
-  
+  const data = {date, rounds}
+  console.log(data);
   return{
-    type: "SET_DEF_VALS",
-    data: {date, rounds}
+    type: "SET_D1EF_VALS",
   };
 }

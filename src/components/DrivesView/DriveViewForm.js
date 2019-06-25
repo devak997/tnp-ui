@@ -6,6 +6,7 @@ import {
   fetchDrives,
   setAddRoundAction,
   setEditDriveAction,
+  setDefaultValues
 } from "../../actions/";
 
 const displayRoundDropDown = props => {
@@ -91,7 +92,7 @@ const displayDriveRounds = (props, driveIndex, drive) => {
                       drive.drive_id,
                       round.id,
                       drive.rounds.length,
-                    props.driveYear
+                      props.driveYear
                     );
                   }}
                 >
@@ -121,11 +122,9 @@ const displayButtons = (props, driveIndex, drive) => {
         <div className="ui basic icon buttons">
           <button
             className="ui button"
-            onClick={
-              props.handleSubmit(formValues =>
-                props.submitData(formValues, drive.drive_id)
-              )
-            }
+            onClick={props.handleSubmit(formValues =>
+              props.submitData(formValues, drive.drive_id)
+            )}
           >
             <i className="check icon" />
           </button>
@@ -153,6 +152,7 @@ const displayButtons = (props, driveIndex, drive) => {
           <button
             className="ui button"
             onClick={() => {
+              props.setDefaultValues(drive.date_of_drive, drive.rounds);
               props.setEditDriveAction(driveIndex + 1);
             }}
           >
@@ -253,18 +253,18 @@ const mapStateToProps = state => {
     editable: state.setEditDrive,
     years: state.driveYears,
     drives: state.drives,
-    driveYear: formValueSelector("driveViewForm")(state, "driveYear")
+    driveYear: formValueSelector("driveViewForm")(state, "driveYear"),
+    initialValues: {
+      driveYear: "upcoming"
+    }
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchDrives, setAddRoundAction, setEditDriveAction }
+  { fetchDrives, setAddRoundAction, setEditDriveAction, setDefaultValues }
 )(
   reduxForm({
-    form: "driveViewForm",
-    initialValues: {
-      driveYear: "upcoming"
-    }
+    form: "driveViewForm"
   })(DriveViewForm)
 );
