@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import tnpbase from "../../api/tnpbase";
 import DriveViewForm from "./DriveViewForm";
-import { fetchDrives } from "../../actions";
+import { fetchDrives, setEditDriveAction, setAddRoundAction } from "../../actions";
 
 class DriveView extends React.Component {
   deleteRound = (drive_id, round_id, noOfRounds, driveYear) => {
@@ -24,31 +24,30 @@ class DriveView extends React.Component {
       .catch(err => console.log(err));
   };
 
-  submitData = (formValues, drive_id) => {
+  submitData = (formValues, drive_id, year) => {
     const roundIds = [];
     const reqKeys = Object.keys(formValues).filter(key =>
       key.startsWith("round")
     );
     for (let i = 0; i < reqKeys.length; i++) {
-      roundIds.push(formValues[reqKeys[i]]);
+      roundIds.push(parseInt(formValues[reqKeys[i]]));
     }
     if (formValues.newRound) {
-      roundIds.push(formValues.newRound);
+      roundIds.push(parseInt(formValues.newRound));
     }
     const data = {
       date: formValues.date.toLocaleDateString("en-GB"),
       roundIds,
       drive_id
     };
-
-    console.log(data);
-    // tnpbase
-    //   .post("/drives/modify", { data })
-    //   .then(() => {
-    //     this.setState({ showTickButtons: false });
-    //     this.fetchUpcomingDrives();
-    //   })
-    //   .catch(err => console.log(err));
+    tnpbase
+      .post("/drives/modify", { data })
+      .then(() => {
+        this.props.fetchDrives(year);
+        this.props.setAddRoundAction(-1);
+        this.props.setEditDriveAction(-1);
+      })
+      .catch(err => console.log(err));
   };
   render() {
     return (
@@ -71,5 +70,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchDrives }
+  { fetchDrives, setAddRoundAction,setEditDriveAction }
 )(DriveView);

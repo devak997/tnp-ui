@@ -57,10 +57,16 @@ export const fetchYears = () => async dispatch => {
   dispatch({ type: "FETCH_YEARS", data: response.data.result});
 }
 
-export const setDefaultValues = (date, rounds) => {
-  const data = {date, rounds}
-  console.log(data);
+export const setDefaultDate = (date) => {
   return{
-    type: "SET_D1EF_VALS",
+    type: "SET_DEF_DATE",
+    payload: date
   };
+}
+
+export const setDefaultRounds = rounds => {
+  return {
+    type: "SET_DEF_ROUNDS",
+    payload: rounds
+  }
 }

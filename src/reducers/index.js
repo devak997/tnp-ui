@@ -67,12 +67,22 @@ const fetchYearReducer = (state = [], action) => {
   }
 }
 
-const setDefaultValues = (state = {date: new Date(), rounds: []}, action) => {
+const setDefaultDate = (state = null, action) => {
   switch(action.type) {
-    case "SET_DEF_VALS":
-      return action.data;
+    case "SET_DEF_DATE":
+      console.log("hi");
+      return action.payload;
     default:
       return state;
+  }
+}
+
+const setDefaultRounds = (state = [], action) => {
+  switch(action.type) {
+    case "SET_DEF_ROUNDS":
+      return action.payload;
+    default:
+      return state
   }
 }
 export default combineReducers({
@@ -84,5 +94,6 @@ export default combineReducers({
   setAddRound: handleSetAddRound,
   setEditDrive: handleSetEditDrive,
   driveYears: fetchYearReducer,
-  defaultValues: setDefaultValues
+  defaultDate: setDefaultDate,
+  defaultRounds: setDefaultRounds
 });

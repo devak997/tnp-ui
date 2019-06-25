@@ -6,7 +6,8 @@ import {
   fetchDrives,
   setAddRoundAction,
   setEditDriveAction,
-  setDefaultValues
+  setDefaultDate,
+  setDefaultRounds
 } from "../../actions/";
 
 const displayRoundDropDown = props => {
@@ -41,7 +42,6 @@ const displayDate = (props, driveIndex, driveDate) => {
             label="Drive Date"
             required
             iconName="calendar alternate outline"
-            defaultValue={driveDate}
           />
         </form>
       ) : (
@@ -64,7 +64,6 @@ const displayDriveRounds = (props, driveIndex, drive) => {
                   component={Select}
                   className="ui dropdown"
                   style={{ padding: "2px", height: "25px" }}
-                  defaultValue={drive_round.id}
                 >
                   {props.rounds.map((round, roundIndex) => {
                     return (
@@ -86,7 +85,7 @@ const displayDriveRounds = (props, driveIndex, drive) => {
                 {round.round_name}
                 <button
                   className="mini ui right floated icon button"
-                  style={{ padding: 2.5 }}
+                  style={{ padding: 2.5,  display: props.driveYear==="upcoming" ? "" : "none" }}
                   onClick={() => {
                     props.deleteRound(
                       drive.drive_id,
@@ -123,7 +122,7 @@ const displayButtons = (props, driveIndex, drive) => {
           <button
             className="ui button"
             onClick={props.handleSubmit(formValues =>
-              props.submitData(formValues, drive.drive_id)
+              props.submitData(formValues, drive.drive_id, props.driveYear)
             )}
           >
             <i className="check icon" />
@@ -144,6 +143,8 @@ const displayButtons = (props, driveIndex, drive) => {
           <button
             className=" ui button"
             onClick={() => {
+              props.setDefaultDate(new Date(drive.date_of_drive));
+              props.setDefaultRounds(drive.rounds);
               props.setAddRoundAction(driveIndex + 1);
             }}
           >
@@ -152,7 +153,8 @@ const displayButtons = (props, driveIndex, drive) => {
           <button
             className="ui button"
             onClick={() => {
-              props.setDefaultValues(drive.date_of_drive, drive.rounds);
+              props.setDefaultDate(new Date(drive.date_of_drive));
+              props.setDefaultRounds(drive.rounds)
               props.setEditDriveAction(driveIndex + 1);
             }}
           >
@@ -176,7 +178,7 @@ const displayDrives = props => {
   if (props.drives.length === 0) {
     return (
       <tr>
-        <td colSpan={5}>It's Lonely Here</td>
+        <td colSpan={8} style={{textAlign: "center"}}><b>It's Lonely Here</b></td>
       </tr>
     );
   }
@@ -196,7 +198,7 @@ const displayDrives = props => {
   });
 };
 
-const DriveViewForm = props => {
+const DriveViewForm = props => { 
   return (
     <div className="ui container">
       <h3 className="ui center aligned icon header">
@@ -237,7 +239,7 @@ const DriveViewForm = props => {
             <th>Rounds</th>
             <th>Type</th>
             <th>Remarks</th>
-            <th style={{ display: props.driveYear ? "" : "none" }}>Action</th>
+            <th style={{ display: props.driveYear==="upcoming" ? "" : "none" }}>Action</th>
           </tr>
         </thead>
         <tbody>{displayDrives(props)}</tbody>
@@ -247,6 +249,10 @@ const DriveViewForm = props => {
 };
 
 const mapStateToProps = state => {
+  const defRounds ={};
+  for(let i = 0; i<state.defaultRounds.length; i++) {
+    defRounds[`rounds${i+1}`] = state.defaultRounds[i].id;
+  }
   return {
     rounds: state.roundsList,
     showAddRound: state.setAddRound,
@@ -255,16 +261,19 @@ const mapStateToProps = state => {
     drives: state.drives,
     driveYear: formValueSelector("driveViewForm")(state, "driveYear"),
     initialValues: {
-      driveYear: "upcoming"
+      driveYear: "upcoming",
+      date: state.defaultDate,
+       ...defRounds
     }
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchDrives, setAddRoundAction, setEditDriveAction, setDefaultValues }
+  { fetchDrives, setAddRoundAction, setEditDriveAction, setDefaultDate, setDefaultRounds }
 )(
   reduxForm({
-    form: "driveViewForm"
+    form: "driveViewForm",
+    enableReinitialize: true
   })(DriveViewForm)
 );
