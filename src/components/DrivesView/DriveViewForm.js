@@ -216,13 +216,17 @@ const DriveViewForm = props => {
           component={ActionSelect}
           buttonText="Get Drives"
           label="Select year"
-          onButtonClick={props.fetchDrives}
+          onButtonClick={() => props.fetchDrives(props.driveYear).then(() => {
+            if(props.drives.length === 0) {
+              window.alert("No upcoming drives")
+            }
+          } ).catch( err => window.alert(err))}
         >
           <option value="upcoming">Upcoming drives</option>
           {props.years.map((year, i) => {
             return (
-              <option key={i} value={year.passing_out_year}>
-                {year.passing_out_year}
+              <option key={i} value={year}>
+                {year} 
               </option>
             );
           })}
