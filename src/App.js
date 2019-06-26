@@ -26,6 +26,8 @@ import tnpbase from "./api/tnpbase";
 
 import { fetchRounds, fetchYears } from "./actions";
 
+import AddUser from "./components/AddUser";
+
 import "./App.css";
 import { connect } from "react-redux";
 import logo from "./images/logo.png";
@@ -37,7 +39,9 @@ class App extends React.Component {
     error: "",
     message: "",
     submitted: false,
-    login: false
+    login: false,
+    currentUser: "",
+    userRole: ""
   };
 
   handleMenuClick = () => {
@@ -96,8 +100,89 @@ class App extends React.Component {
     const data = { user, password };
     tnpbase
       .post("/login/page", { data })
-      .then(() => console.log("Submitted"))
+      .then(res => {
+        this.setState({ currentUser: res.data.user, userRole: res.data.role });
+      })
       .catch(err => console.log(err));
+  };
+
+  displayInnerContent = () => {
+    if (this.state.userRole === "ADMIN") {
+      return (
+        <Switch>
+          <Route exact path="/" component={Dashboard} />
+          <Route
+            path="/students/add"
+            render={() => (
+              <AddStudentsDisplay
+                handleUpload={this.FileUploadHandler}
+                message={this.state.message}
+                error={this.state.error}
+                loading={this.state.loading}
+                submitted={this.state.submitted}
+                handleXClick={this.handleXClick}
+              />
+            )}
+          />
+          <Route path="/students/search" component={SearchStudentDisplay} />
+          <Route path="/user/add" component={AddUser} />
+          <Route path="/students/filter" component={FilterStudentsDisplay} />
+          <Route path="/drives/add" component={AddDriveDisplay} />
+          <Route path="/drives/view" component={DriveViewDisplay} />
+          <Route path="/rounds/config" component={RoundsConfigDisplay} />
+          <Route path="/drives/attendance" component={DriveAttendanceDisplay} />
+          <Route
+            path="/drives/performance"
+            component={DrivePerformanceDisplay}
+          />
+          <Route path="/tests/new" component={NewTestDisplay} />
+          <Route path="/tests/performance" component={TestPerformaceDisplay} />
+        </Switch>
+      );
+    } else if (this.state.userRole === "TPO") {
+      return (
+        <Switch>
+          <Route exact path="/" component={Dashboard} />
+          <Route
+            path="/students/add"
+            render={() => (
+              <AddStudentsDisplay
+                handleUpload={this.FileUploadHandler}
+                message={this.state.message}
+                error={this.state.error}
+                loading={this.state.loading}
+                submitted={this.state.submitted}
+                handleXClick={this.handleXClick}
+              />
+            )}
+          />
+          <Route path="/students/search" component={SearchStudentDisplay} />
+          <Route path="/students/filter" component={FilterStudentsDisplay} />
+          <Route path="/drives/add" component={AddDriveDisplay} />
+          <Route path="/drives/view" component={DriveViewDisplay} />
+          <Route path="/rounds/config" component={RoundsConfigDisplay} />
+          <Route path="/drives/attendance" component={DriveAttendanceDisplay} />
+          <Route
+            path="/drives/performance"
+            component={DrivePerformanceDisplay}
+          />
+          <Route path="/tests/new" component={NewTestDisplay} />
+          <Route path="/tests/performance" component={TestPerformaceDisplay} />
+        </Switch>
+      );
+    } else if (this.state.userRole === "PCO") {
+      return (
+        <Switch>
+          <Route exact path="/" component={Dashboard} />
+          <Route path="/drives/view" component={DriveViewDisplay} />
+          <Route
+            path="/drives/performance"
+            component={DrivePerformanceDisplay}
+          />
+          <Route path="/tests/performance" component={TestPerformaceDisplay} />
+        </Switch>
+      );
+    }
   };
 
   displayContent = () => {
@@ -108,46 +193,11 @@ class App extends React.Component {
           <SideBar
             isVisible={this.state.sidebarVisible}
             onClose={this.handleMenuClick}
+            userRole={this.state.userRole}
           />
 
           <div style={{ marginLeft: "10px", marginRight: "10px" }}>
-            <Switch>
-              <Route exact path="/" component={Dashboard} />
-              <Route
-                path="/students/add"
-                render={() => (
-                  <AddStudentsDisplay
-                    handleUpload={this.FileUploadHandler}
-                    message={this.state.message}
-                    error={this.state.error}
-                    loading={this.state.loading}
-                    submitted={this.state.submitted}
-                    handleXClick={this.handleXClick}
-                  />
-                )}
-              />
-              <Route path="/students/search" component={SearchStudentDisplay} />
-              <Route
-                path="/students/filter"
-                component={FilterStudentsDisplay}
-              />
-              <Route path="/drives/add" component={AddDriveDisplay} />
-              <Route path="/drives/view" component={DriveViewDisplay} />
-              <Route path="/rounds/config" component={RoundsConfigDisplay} />
-              <Route
-                path="/drives/attendance"
-                component={DriveAttendanceDisplay}
-              />
-              <Route
-                path="/drives/performance"
-                component={DrivePerformanceDisplay}
-              />
-              <Route path="/tests/new" component={NewTestDisplay} />
-              <Route
-                path="/tests/performance"
-                component={TestPerformaceDisplay}
-              />
-            </Switch>
+            {this.displayInnerContent()}
           </div>
         </div>
       );
