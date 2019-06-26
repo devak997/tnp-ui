@@ -91,15 +91,20 @@ class App extends React.Component {
     this.props.fetchYears();
   };
 
-  handleLogin = () => {
-    this.setState({login : true});
-  }
+  handleLogin = (user, password) => {
+    this.setState({ login: true });
+    const data = { user, password };
+    tnpbase
+      .post("/login/page", { data })
+      .then(() => console.log("Submitted"))
+      .catch(err => console.log(err));
+  };
 
   displayContent = () => {
-    if(this.state.login) {
-      return(
+    if (this.state.login) {
+      return (
         <div>
-        <Navbar handleMenuClick={this.handleMenuClick} />
+          <Navbar handleMenuClick={this.handleMenuClick} />
           <SideBar
             isVisible={this.state.sidebarVisible}
             onClose={this.handleMenuClick}
@@ -144,32 +149,29 @@ class App extends React.Component {
               />
             </Switch>
           </div>
-          </div>
+        </div>
       );
     } else {
-      return(
-        <LoginPage handleLogin={this.handleLogin}/>
-      );
+      return <LoginPage handleLogin={this.handleLogin} />;
     }
-  }
+  };
 
   render() {
     return (
       <div>
-        <div style={{ backgroundColor: "#3366ff"}}>
-            <img
-              src={logo}
-              alt="Logo"
-              style={{
-                display: "block",
-                marginLeft: "auto",
-                marginRight: "auto",
-                height: "70px"
-              }}
-            />
-             
-          </div>
-          {this.displayContent()}
+        <div style={{ backgroundColor: "#1b181a" }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+              height: "60px"
+            }}
+          />
+        </div>
+        {this.displayContent()}
       </div>
     );
   }
