@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Field, reduxForm, formValueSelector } from "redux-form";
 import { DatePickerNew, Select, ActionSelect } from "../ui_utils/";
 import {
-  fetchDrives,
   setAddRoundAction,
   setEditDriveAction,
   setDefaultDate,
@@ -216,11 +215,7 @@ const DriveViewForm = props => {
           component={ActionSelect}
           buttonText="Get Drives"
           label="Select year"
-          onButtonClick={() => props.fetchDrives(props.driveYear).then(() => {
-            if(props.drives.length === 0) {
-              window.alert("No upcoming drives")
-            }
-          } ).catch( err => window.alert(err))}
+          onButtonClick={props.fetchDrives}
         >
           <option value="upcoming">Upcoming drives</option>
           {props.years.map((year, i) => {
@@ -262,7 +257,6 @@ const mapStateToProps = state => {
     showAddRound: state.setAddRound,
     editable: state.setEditDrive,
     years: state.driveYears,
-    drives: state.drives,
     driveYear: formValueSelector("driveViewForm")(state, "driveYear"),
     initialValues: {
       driveYear: "upcoming",
@@ -274,7 +268,7 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchDrives, setAddRoundAction, setEditDriveAction, setDefaultDate, setDefaultRounds }
+  {  setAddRoundAction, setEditDriveAction, setDefaultDate, setDefaultRounds }
 )(
   reduxForm({
     form: "driveViewForm",
