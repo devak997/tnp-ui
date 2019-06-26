@@ -20,12 +20,15 @@ import DrivePerformanceDisplay from "./components/DrivePerformance";
 import NewTestDisplay from "./components/NewTestDisplay";
 import TestPerformaceDisplay from "./components/TestPerformace";
 
+import LoginPage from "./components/LoginPage";
+
 import tnpbase from "./api/tnpbase";
 
 import { fetchRounds, fetchYears } from "./actions";
 
 import "./App.css";
 import { connect } from "react-redux";
+import logo from "./images/logo.png";
 
 class App extends React.Component {
   state = {
@@ -33,7 +36,8 @@ class App extends React.Component {
     loading: false,
     error: "",
     message: "",
-    submitted: false
+    submitted: false,
+    login: false
   };
 
   handleMenuClick = () => {
@@ -87,11 +91,15 @@ class App extends React.Component {
     this.props.fetchYears();
   };
 
-  render() {
-    return (
-      <div>
+  handleLogin = () => {
+    this.setState({login : true});
+  }
+
+  displayContent = () => {
+    if(this.state.login) {
+      return(
         <div>
-          <Navbar handleMenuClick={this.handleMenuClick} />
+        <Navbar handleMenuClick={this.handleMenuClick} />
           <SideBar
             isVisible={this.state.sidebarVisible}
             onClose={this.handleMenuClick}
@@ -136,7 +144,32 @@ class App extends React.Component {
               />
             </Switch>
           </div>
-        </div>
+          </div>
+      );
+    } else {
+      return(
+        <LoginPage handleLogin={this.handleLogin}/>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <div style={{ backgroundColor: "#1b181a"}}>
+            <img
+              src={logo}
+              alt="Logo"
+              style={{
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
+                height: "70px"
+              }}
+            />
+             
+          </div>
+          {this.displayContent()}
       </div>
     );
   }
