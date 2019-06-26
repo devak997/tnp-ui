@@ -156,7 +156,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <div style={{ backgroundColor: "#1b181a"}}>
+        <div style={{ backgroundColor: "#3366ff"}}>
             <img
               src={logo}
               alt="Logo"

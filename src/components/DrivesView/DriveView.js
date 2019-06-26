@@ -27,7 +27,6 @@ class DriveView extends React.Component {
   getDrives = year => {
     console.log(year)
     if (year === "upcoming") {
-      console.log("Harsha")
       tnpbase
         .get("/drives/upcoming")
         .then(res => {
@@ -36,7 +35,7 @@ class DriveView extends React.Component {
             if (res.data.result.length === 0) {
               this.setState({drives: res.data.result});
               window.alert("No upcoming drives");
-            } else if (res.data.result.length != 0) {
+            } else if (res.data.result.length !== 0) {
               console.log("hi")
               this.setState({
                 drives: res.data.result
@@ -57,7 +56,7 @@ class DriveView extends React.Component {
             if (res.data.result.length === 0) {
               this.setState({drives: res.data.result});
               window.alert("No drives");
-            } else if (res.data.result.length != 0) {
+            } else if (res.data.result.length !== 0) {
               this.setState({
                 drives: res.data.result
               });

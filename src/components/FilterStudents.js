@@ -137,7 +137,7 @@ class FilterStudents extends React.Component {
           if(res.data.result.length===0){
             this.setState({ error: res.data.status, message: res.data.error,loading:false });
           }
-          else if(res.data.result.length!=0){
+          else if(res.data.result.length!==0){
           this.setState({
             filteredStudents: res.data.result,
             message: res.data.status,
