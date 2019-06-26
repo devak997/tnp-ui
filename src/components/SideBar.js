@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const SideBar = props => {
+  console.log("sidebar", props.userRole);
   return (
     <div
       className={`ui left vertical inverted menu sidebar ${
@@ -14,13 +15,11 @@ const SideBar = props => {
           <i className="close icon " />
         </button>
       </div>
-      <div className="item">
-        <div
-          className="header"
-          style={{ display: props.userRole === "PCO" ? "none" : "" }}
-        >
-          Student Details
-        </div>
+      <div
+        className="item"
+        style={{ display: props.userRole === "PCO" ? "none" : "" }}
+      >
+        <div className="header">Student Details</div>
         <div className="menu">
           <Link to="/students/add" className="item">
             Import Student DB
@@ -78,14 +77,17 @@ const SideBar = props => {
           </Link>
         </div>
       </div>
-      <div className="item">
+      <div
+        className="item"
+        style={{ display: props.userRole === "ADMIN" ? "" : "none" }}
+      >
         <div className="header">Support</div>
-        <div
-          className="menu"
-          style={{ display: props.userRole === "ADMIN" ? "" : "none" }}
-        >
+        <div className="menu">
           <Link to="/user/add" className="item">
             Add User
+          </Link>
+          <Link to="/user/reset" className="item">
+            Reset Password
           </Link>
         </div>
       </div>

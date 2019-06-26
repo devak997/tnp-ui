@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 
 import SideBar from "./components/SideBar";
 import Navbar from "./components/Navbar";
@@ -31,6 +31,7 @@ import AddUser from "./components/AddUser";
 import "./App.css";
 import { connect } from "react-redux";
 import logo from "./images/logo.png";
+import ResetUser from "./components/ResetUser";
 
 class App extends React.Component {
   state = {
@@ -41,7 +42,8 @@ class App extends React.Component {
     submitted: false,
     login: false,
     currentUser: "",
-    userRole: ""
+    userRole: "",
+    loginError: ""
   };
 
   handleMenuClick = () => {
@@ -96,18 +98,34 @@ class App extends React.Component {
   };
 
   handleLogin = (user, password) => {
-    this.setState({ login: true });
+    this.setState({loginError: "Loading..."})
     const data = { user, password };
     tnpbase
       .post("/login/page", { data })
       .then(res => {
-        this.setState({ currentUser: res.data.user, userRole: res.data.role });
+        if(res.data.login) {
+          sessionStorage.setItem("login", true);
+          sessionStorage.setItem("currentUser", res.data.user);
+          sessionStorage.setItem("userRole", res.data.role);
+          // window.location.reload();
+          this.props.history.push("/");
+        }
+        this.setState({ loginError: res.data.status });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        this.setState({loginError: err.message})
+      });
   };
 
+  handleLogout = () => {
+    console.log("In logout")
+    sessionStorage.setItem("login",false);
+    window.location.reload();
+  }
+
   displayInnerContent = () => {
-    if (this.state.userRole === "ADMIN") {
+    if (sessionStorage.getItem("userRole") === "ADMIN") {
       return (
         <Switch>
           <Route exact path="/" component={Dashboard} />
@@ -137,9 +155,10 @@ class App extends React.Component {
           />
           <Route path="/tests/new" component={NewTestDisplay} />
           <Route path="/tests/performance" component={TestPerformaceDisplay} />
+          <Route path="/user/reset" component={ResetUser} />
         </Switch>
       );
-    } else if (this.state.userRole === "TPO") {
+    } else if (sessionStorage.getItem("userRole")=== "TPO") {
       return (
         <Switch>
           <Route exact path="/" component={Dashboard} />
@@ -168,9 +187,10 @@ class App extends React.Component {
           />
           <Route path="/tests/new" component={NewTestDisplay} />
           <Route path="/tests/performance" component={TestPerformaceDisplay} />
+         
         </Switch>
       );
-    } else if (this.state.userRole === "PCO") {
+    } else if (sessionStorage.getItem("userRole") === "PCO") {
       return (
         <Switch>
           <Route exact path="/" component={Dashboard} />
@@ -186,14 +206,14 @@ class App extends React.Component {
   };
 
   displayContent = () => {
-    if (this.state.login) {
+    if (JSON.parse(sessionStorage.getItem("login")) === true) {
       return (
         <div>
-          <Navbar handleMenuClick={this.handleMenuClick} />
+          <Navbar handleMenuClick={this.handleMenuClick} handleLogout={this.handleLogout}/>
           <SideBar
             isVisible={this.state.sidebarVisible}
             onClose={this.handleMenuClick}
-            userRole={this.state.userRole}
+            userRole={sessionStorage.getItem("userRole")}
           />
 
           <div style={{ marginLeft: "10px", marginRight: "10px" }}>
@@ -202,11 +222,12 @@ class App extends React.Component {
         </div>
       );
     } else {
-      return <LoginPage handleLogin={this.handleLogin} />;
+      return <LoginPage handleLogin={this.handleLogin} loginError={this.state.loginError}/>;
     }
   };
 
   render() {
+    console.log(typeof JSON.parse(sessionStorage.getItem("login")))
     return (
       <div>
         <div style={{ backgroundColor: "#1b181a" }}>
@@ -227,7 +248,7 @@ class App extends React.Component {
   }
 }
 
-export default connect(
+export default withRouter(connect(
   null,
   { fetchRounds, fetchYears }
-)(App);
+)(App));

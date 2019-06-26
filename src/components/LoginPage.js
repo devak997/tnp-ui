@@ -50,7 +50,9 @@ class LoginPage extends React.Component {
               </div>
             </div>
 
-            <div className="ui error message" />
+            <div className="ui message">
+                {this.props.loginError}
+            </div>
           </form>
         </div>
       </div>
