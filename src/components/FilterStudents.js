@@ -134,14 +134,20 @@ class FilterStudents extends React.Component {
       .post("/students/filter", { data })
       .then(res => {
         if (res.status === 200) {
+          if(res.data.result.length===0){
+            this.setState({ error: res.data.status, message: res.data.error,loading:false });
+          }
+          else if(res.data.result.length!=0){
           this.setState({
             filteredStudents: res.data.result,
             message: res.data.status,
             loading: false,
             error: ""
           });
+        }
         } else {
-          this.setState({ error: res.data.status, message: res.data.error });
+          this.setState({ error: res.data.status, message: res.data.error,loading:false });
+
         }
       })
       .catch(err => {
