@@ -13,7 +13,7 @@ class ResetUser extends React.Component {
   };
   handleReset = () => {
     this.setState({text: "Loading.."})
-    const data = {seleted_user: this.state.selectUser, password: this.state.password}
+    const data = {selected_user: this.state.selectUser, password: this.state.password}
     tnpbase.post("/user/reset", {data} ).then(res => {
       this.setState({text: res.data.status})
     } ).catch(err => {
@@ -37,7 +37,7 @@ class ResetUser extends React.Component {
             >
               <option value="">Select user</option>
               {this.state.allUsers.map((user, userIndex) => {
-                return <option value={user.id}>{user.name}</option>;
+                return <option value={user.user_id}>{user.user_name}</option>;
               })}
             </select>
           </div>
