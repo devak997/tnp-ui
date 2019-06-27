@@ -14,6 +14,10 @@ const Navbar = props => {
       </Link>
       <div className="right menu">
          {/*eslint-disable-next-line*/}
+         <a className="ui item">
+          {props.user}
+        </a>
+         {/*eslint-disable-next-line*/}
         <a className="ui item" onClick={props.handleLogout}>
           Logout
         </a>

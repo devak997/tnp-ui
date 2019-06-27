@@ -32,6 +32,7 @@ import "./App.css";
 import { connect } from "react-redux";
 import logo from "./images/logo.png";
 import ResetUser from "./components/ResetUser";
+import DeleteUser from "./components/DeleteUser";
 
 class App extends React.Component {
   state = {
@@ -119,8 +120,9 @@ class App extends React.Component {
   };
 
   handleLogout = () => {
-    console.log("In logout")
     sessionStorage.setItem("login",false);
+    sessionStorage.setItem("currentUser","");
+    sessionStorage.setItem("userRole", "");
     window.location.reload();
   }
 
@@ -156,6 +158,7 @@ class App extends React.Component {
           <Route path="/tests/new" component={NewTestDisplay} />
           <Route path="/tests/performance" component={TestPerformaceDisplay} />
           <Route path="/user/reset" component={ResetUser} />
+          <Route path="/user/delete" component={DeleteUser} />
         </Switch>
       );
     } else if (sessionStorage.getItem("userRole")=== "TPO") {
@@ -209,7 +212,7 @@ class App extends React.Component {
     if (JSON.parse(sessionStorage.getItem("login")) === true) {
       return (
         <div>
-          <Navbar handleMenuClick={this.handleMenuClick} handleLogout={this.handleLogout}/>
+          <Navbar handleMenuClick={this.handleMenuClick} handleLogout={this.handleLogout} user={sessionStorage.getItem("currentUser")}/>
           <SideBar
             isVisible={this.state.sidebarVisible}
             onClose={this.handleMenuClick}

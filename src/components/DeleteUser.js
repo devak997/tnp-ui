@@ -24,6 +24,7 @@ class DeleteUser extends React.Component {
       .post("/user/delete", { data })
       .then(res => {
         this.setState({ text: res.data.status });
+        this.getAllUsers();
       })
       .catch(err => {
         this.setState({ text: err.message });
@@ -39,13 +40,13 @@ class DeleteUser extends React.Component {
         <div className="item">
           <div className="right floated content">
             <button
-              className="ui button"
-              onClick={() => this.deleteUser(user.id)}
+              className="ui secondary button"
+              onClick={() => this.deleteUser(user.user_id)}
             >
               Delete
             </button>
           </div>
-          <div className="content">{user.name}</div>
+          <div className="content">{user.user_name}</div>
         </div>
       );
     });
@@ -56,7 +57,7 @@ class DeleteUser extends React.Component {
         <div className="ui middle aligned divided list">
           {this.renderUsers()}
         </div>
-        <div className="ui message">{this.state.text}</div>
+        <div className="ui message" style={{display: this.state.text === "" ? "none" : ""}}>{this.state.text}</div>
       </div>
     );
   }

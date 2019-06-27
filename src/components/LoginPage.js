@@ -3,6 +3,7 @@ import icon from "../images/icon.png";
 
 class LoginPage extends React.Component {
   state = { username: "", password: "" };
+  
   render() {
     return (
       <div
