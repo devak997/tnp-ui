@@ -89,6 +89,9 @@ const SideBar = props => {
           <Link to="/user/reset" className="item">
             Reset Password
           </Link>
+          <Link to="/user/delete" className="item">
+            Delete Users
+          </Link>
         </div>
       </div>
     </div>
