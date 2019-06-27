@@ -54,7 +54,6 @@ export const setEditDriveAction = driveID => {
 
 export const fetchYears = () => async dispatch => {
   const response = await tnpbase.get("/passing/year");
-  console.log(response);
   dispatch({ type: "FETCH_YEARS", data: response.data.result});
 }
 

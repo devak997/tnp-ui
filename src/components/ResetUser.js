@@ -11,7 +11,8 @@ class ResetUser extends React.Component {
   componentDidMount = () => {
     this.getAllUsers();
   };
-  handleReset = () => {
+  handleReset = (e) => {
+    e.preventDefault();
     this.setState({text: "Loading.."})
     const data = {selected_user: this.state.selectUser, password: this.state.password}
     tnpbase.post("/user/reset", {data} ).then(res => {

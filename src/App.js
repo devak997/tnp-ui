@@ -227,7 +227,6 @@ class App extends React.Component {
   };
 
   render() {
-    console.log(typeof JSON.parse(sessionStorage.getItem("login")))
     return (
       <div>
         <div style={{ backgroundColor: "#1b181a" }}>

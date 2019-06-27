@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const SideBar = props => {
-  console.log("sidebar", props.userRole);
   return (
     <div
       className={`ui left vertical inverted menu sidebar ${
