@@ -349,12 +349,14 @@ class FilterStudents extends React.Component {
               data={data}
               label="Branch"
             />
-            <Field
-              name="selectedCompanies"
-              component={ModifiedMultiSelect}
-              data={this.state.specialDrives}
-              label="Select Companies"
-            />
+            {this.props.allowSelected === "yes" ? (
+              <Field
+                name="selectedCompanies"
+                component={ModifiedMultiSelect}
+                data={this.state.specialDrives}
+                label="Select Companies"
+              />
+            ) : null}
           </div>
           <div className="field" style={{ marginTop: "10px" }}>
             {this.displayStatus()}
@@ -509,7 +511,8 @@ const validate = formValues => {
 
 const mapStateToProps = state => {
   return {
-    allDrives: state.drives
+    allDrives: state.drives,
+    allowSelected: formValueSelector("filterStudents")(state, "allowSelected")
   };
 };
 
