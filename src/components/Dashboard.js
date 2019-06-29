@@ -10,11 +10,23 @@ class Dashboard extends React.Component {
       console.log(err);
     })
   }
+
+  showNoDrives = () => {
+    if(this.state.drives.length === 0) {
+      return(
+        <tr>
+          <td colSpan={7} style={{textAlign: "center"}} >
+            No upcoming drives
+          </td>
+        </tr>
+      );
+    }
+  }
   render() {
     return (
       <div className="ui container">
         <h2 style={{textAlign: "center"}}>Upcoming Drives</h2>
-        <table className="ui celled striped table">
+        <table className="ui blue celled striped compact table">
         <thead>
           <tr>
             <th>SNo.</th>
@@ -27,6 +39,7 @@ class Dashboard extends React.Component {
           </tr>
         </thead>
         <tbody>
+         {this.showNoDrives()}
           {this.state.drives.map((drive, driveIndex) => {
             return(
               <tr key={driveIndex}>
