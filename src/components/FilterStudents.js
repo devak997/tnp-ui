@@ -50,11 +50,23 @@ class FilterStudents extends React.Component {
     message: "",
     additionalMsg: "",
     submitted: false,
-    addToDriveClicked: false
+    addToDriveClicked: false,
+    specialDrives: []
   };
 
   componentDidUpdate = () => {
     this.props.fetchDrives("upcoming");
+  };
+
+  getSpecialDrives = () => {
+    tnpbase
+      .get("/drives/special")
+      .then(res => {
+        this.setState({ specialDrives: res.data.result });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   handleXClick = () => {
@@ -128,26 +140,33 @@ class FilterStudents extends React.Component {
       eamcet_rank: parseInt(formValues.eamcetRank),
       gender: formValues.gender,
       isSelected: formValues.allowSelected,
-      year_of_passing: parseInt(formValues.yop)
+      year_of_passing: parseInt(formValues.yop),
+      selectedCompanies: formValues.selectedCompanies
     };
     tnpbase
       .post("/students/filter", { data })
       .then(res => {
         if (res.status === 200) {
-          if(res.data.result.length===0){
-            this.setState({ error: res.data.status, message: res.data.error,loading:false });
+          if (res.data.result.length === 0) {
+            this.setState({
+              error: res.data.status,
+              message: res.data.error,
+              loading: false
+            });
+          } else if (res.data.result.length !== 0) {
+            this.setState({
+              filteredStudents: res.data.result,
+              message: res.data.status,
+              loading: false,
+              error: ""
+            });
           }
-          else if(res.data.result.length!==0){
-          this.setState({
-            filteredStudents: res.data.result,
-            message: res.data.status,
-            loading: false,
-            error: ""
-          });
-        }
         } else {
-          this.setState({ error: res.data.status, message: res.data.error,loading:false });
-
+          this.setState({
+            error: res.data.status,
+            message: res.data.error,
+            loading: false
+          });
         }
       })
       .catch(err => {
@@ -330,9 +349,15 @@ class FilterStudents extends React.Component {
               data={data}
               label="Branch"
             />
-            <div className="field" style={{ marginTop: "10px" }}>
-              {this.displayStatus()}
-            </div>
+            <Field
+              name="selectedCompanies"
+              component={ModifiedMultiSelect}
+              data={this.state.specialDrives}
+              label="Select Companies"
+            />
+          </div>
+          <div className="field" style={{ marginTop: "10px" }}>
+            {this.displayStatus()}
           </div>
           <button
             className={`ui secondary button ${
