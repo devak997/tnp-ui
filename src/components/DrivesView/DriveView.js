@@ -114,6 +114,7 @@ class DriveView extends React.Component {
       .catch(err => window.alert(`Error: ${err.message}`));
   };
   render() {
+    console.log("In view drive");
     return (
       <div>
         <DriveViewForm

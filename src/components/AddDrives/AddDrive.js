@@ -54,6 +54,7 @@ class AddDrive extends React.Component {
   };
 
   render() {
+    console.log("Inn addDrive");
     return (
       <div className="ui container">
         <AddDriveForm
