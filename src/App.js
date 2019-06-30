@@ -111,6 +111,7 @@ class App extends React.Component {
           // window.location.reload();
           this.props.history.push("/");
         }
+        console.log(res.data.status)
         this.setState({ loginError: res.data.status });
       })
       .catch(err => {
