@@ -158,7 +158,6 @@ class SearchStudent extends React.Component {
                 .post('search/student/driveEditDetail',data)
                 .then(()=>{
                   this.getStudentData();
-                  console.log("Succesfull");
                   this.setState({driveEditDetail : -1 , driveContent : []})
                 })
                 .catch((err)=>{console.log(err)})
@@ -275,8 +274,7 @@ class SearchStudent extends React.Component {
   }
 
   sendData =()=>{
-    console.log("Send data")
-    let data = {students : [{HTNO : this.state.rollNumber}] , driveToAdd : this.state.drive_id}
+    let data = {students : [{HTNO : this.state.personalDetails.HTNO}] , driveToAdd : this.state.drive_id}
 
     tnpbase
       .post('/students/addToDrive',{data})
@@ -329,7 +327,6 @@ class SearchStudent extends React.Component {
     tnpbase
       .get('/drives/upcoming')
       .then((result)=>{
-        console.log("Result ikkade d : ",result.data.result);
         this.setState({drives : result.data.result});
       })
       .catch((err)=>{
