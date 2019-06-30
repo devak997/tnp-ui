@@ -17,9 +17,10 @@ class Page extends React.Component {
   };
 
   getDrives = dateDetail => {
+    console.log(dateDetail);
     const data = { date: new Date(dateDetail).toLocaleDateString("en-GB") };
     tnpbase
-      .post("/drives/drivesList", data)
+      .post("/drives/drivesList", {data})
       .then(response => {
         this.setState({ drives: response.data });
       })
@@ -60,7 +61,7 @@ class Page extends React.Component {
                 ups[i].initialOfferStatus = this.state.studentDetails[
                   i
                 ].offer_letter;
-                this.getDrives();
+                this.getDrives(this.state.date);
                 this.setState({ detailEdit: ups });
               });
           }}

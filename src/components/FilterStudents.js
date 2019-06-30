@@ -11,7 +11,7 @@ import {
 
 import ErrorDisplay from "./ui_utils/ErrorDisplay";
 import { fetchDrives } from "../actions/";
-import { Field, reduxForm } from "redux-form";
+import { Field, reduxForm, formValueSelector } from "redux-form";
 import SuccessMessage from "./ui_utils/SuccessMessage";
 
 const data = [
@@ -58,10 +58,15 @@ class FilterStudents extends React.Component {
     this.props.fetchDrives("upcoming");
   };
 
+  componentDidMount = () => {
+    this.getSpecialDrives();
+  }
+
   getSpecialDrives = () => {
     tnpbase
       .get("/drives/special")
       .then(res => {
+        console.log(res.data.result)
         this.setState({ specialDrives: res.data.result });
       })
       .catch(err => {
