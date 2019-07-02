@@ -2,14 +2,15 @@ import React from "react";
 import tnpbase from "../api/tnpbase";
 
 class AddUser extends React.Component {
-  state = { username: "", password: "", role: "", text: "" };
+  state = { username: "", password: "", role: "", text: "", branch: "" };
 
   addUser = () => {
     this.setState({ text: "loading" });
     const data = {
       user: this.state.username,
       password: this.state.password,
-      role: this.state.role
+      role: this.state.role,
+      branch: this.state.branch
     };
     tnpbase
       .post("/user/add", { data })
@@ -50,12 +51,23 @@ class AddUser extends React.Component {
             >
               <option value="">Select Role</option>
               <option value="TPO">TPO</option>
-              <option value="CSE Coordinator">CSE Coordinator</option>
-              <option value="ECE Coordinator">ECE Coordinator</option>
-              <option value="MECH Coordinator">MECH Coordinator</option>
-              <option value="EEE Coordinator">EEE Coordinator</option>
-              <option value="CIVIL Coordinator">CIVIL Coordinator</option>
-              <option value="IT Coordinator">IT Coordinator</option>
+              <option value="pco">PCO</option>
+            </select>
+          </div>
+          <div className="field">
+            <label>Branch</label>
+            <select
+              value={this.state.branch}
+              onChange={e => this.setState({ branch: e.target.value })}
+            >
+              <option value="">Select Branch</option>
+              <option value="TPO">TPO</option>
+              <option value="05">CSE</option>
+              <option value="12">IT</option>
+              <option value="04">ECE </option>
+              <option value="02">EEE </option>
+              <option value="01">CIVIL </option>
+              <option value="03">MECH</option>
             </select>
           </div>
           <button className="ui secondary button" onClick={this.addUser}>
