@@ -50,7 +50,12 @@ class AddUser extends React.Component {
             >
               <option value="">Select Role</option>
               <option value="TPO">TPO</option>
-              <option value="PCO">PCO</option>
+              <option value="CSE Coordinator">CSE Coordinator</option>
+              <option value="ECE Coordinator">ECE Coordinator</option>
+              <option value="MECH Coordinator">MECH Coordinator</option>
+              <option value="EEE Coordinator">EEE Coordinator</option>
+              <option value="CIVIL Coordinator">CIVIL Coordinator</option>
+              <option value="IT Coordinator">IT Coordinator</option>
             </select>
           </div>
           <button className="ui secondary button" onClick={this.addUser}>

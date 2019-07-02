@@ -1,6 +1,6 @@
 import React from "react";
 import tnpbase from "../api/tnpbase";
-
+import ErrorDisplay from './ui_utils/ErrorDisplay';
 
 class SearchStudent extends React.Component {
   state = {
@@ -16,21 +16,77 @@ class SearchStudent extends React.Component {
     offerStatus: ["Submitted", "Not Submitted"],
     showForm : false,
     content: "",
-    driveDetails: []
+    driveDetails: [],
+    loading: false,
+    error: "",
+    message: "",
+    submitted: false,
+    showMessage: false
   };
+
+  handleXClick = () => {
+    this.setState({ submitted: false });
+  };
+
+  displayMessage = () => {
+    if (this.state.submitted) {
+      if (this.state.loading) {
+        return <h1>Loading</h1>
+      } else if (this.state.error !== "") {  
+        return (
+          <ErrorDisplay
+            headerData={this.state.error}
+            message={this.state.message}
+            showTry={false}
+            handleXclick={this.handleXclick}
+          />
+        );
+      }
+    }
+  }
+
+  enableTable = () =>{
+    this.setState({showMessage: true})
+  }
 
   getStudentData = () => {
     const data = { HTNO: this.state.rollNumber };
     tnpbase
       .post('/student/details', data)
-      .then((result) => {
+      .then((response) => {
         this.setState({
-          personalDetails: result.data.personal,
-          driveDetails: result.data.drive
+          submitted : true, loading : true
         });
+        if(response.status === 200){
+          if(response.data.result.length !== 0){
+            this.setState({
+              loading : false,
+              message : response.data.status,
+              error : "",
+              personalDetails: response.data.result[0],
+              driveDetails: response.data.result[1]
+            });
+          } else {
+            this.setState({
+              personalDetails : [] , driveDetails : []
+            })
+          }
+        } else {
+          this.setState({
+            loading : false,
+            error : response.data.status,
+            message : response.data.error
+          });
+        }
       })
       .catch((err) => {
         console.log(err);
+        this.setState({
+          submitted:true,
+          loading : false,
+          message : err.message,
+          error : "Unable to send data"
+        });
       })
   };
 
@@ -38,9 +94,10 @@ class SearchStudent extends React.Component {
     const data = { drive_name: drive};
     tnpbase 
       .post("/drive/rounds",data)
-      .then((result) => {
+      .then((res) => {
+        console.log(res)
         this.setState({
-          rounds : result.data
+          rounds : res.data.result
         });
       })
       .catch((err) => {
@@ -62,7 +119,8 @@ class SearchStudent extends React.Component {
                 .post('/student/editDetail',ups)
                 .then(()=>{
                   this.getStudentData();
-                  this.setState({editDetail : -1})
+                  this.setState({editDetail : -1});
+                  window.alert('Submit successfull');
                 })
                 .catch((err)=>{console.log(err)})
             }
@@ -158,7 +216,8 @@ class SearchStudent extends React.Component {
                 .post('search/student/driveEditDetail',data)
                 .then(()=>{
                   this.getStudentData();
-                  this.setState({driveEditDetail : -1 , driveContent : []})
+                  this.setState({driveEditDetail : -1 , driveContent : []});
+                  window.alert('Submit successfull');
                 })
                 .catch((err)=>{console.log(err)})
             }
@@ -221,8 +280,8 @@ class SearchStudent extends React.Component {
                   
                 }}
               >
-                {this.state.rounds.map(selection => {
-                  return(<option value={selection.round_name}>{selection.round_name}</option>)
+                {this.state.rounds.map((selection,index )=> {
+                  return(<option key = {index}  value={selection.round_name}>{selection.round_name}</option>)
                 })}
               </select>
             ) : (
@@ -256,8 +315,8 @@ class SearchStudent extends React.Component {
                   
                 }}
               >
-                {this.state.offerStatus.map(selection => (
-                  <option value={selection}>{selection}</option>
+                {this.state.offerStatus.map((selection,index) => (
+                  <option key = {index} value={selection}>{selection}</option>
                 ))}
               </select>
             ) : (
@@ -274,11 +333,13 @@ class SearchStudent extends React.Component {
   }
 
   sendData =()=>{
-    let data = {students : [{HTNO : this.state.personalDetails.HTNO}] , driveToAdd : this.state.drive_id}
+    console.log("Send data")
+    let data = {students : [{HTNO : this.state.rollNumber}] , driveToAdd : this.state.drive_id}
 
     tnpbase
       .post('/students/addToDrive',{data})
       .then((res)=>{
+        window.alert('Submit successfull');
         console.log("Succesfully added");
       })
       .catch((err)=>{
