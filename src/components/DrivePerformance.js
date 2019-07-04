@@ -32,6 +32,7 @@ class Page extends React.Component {
     tnpbase
       .post("/drives/performance/driveDetails", data)
       .then(response => {
+        console.log(response);
         this.setState({submitted : true,loading : true});
         if (response.status === 200) {
           if (response.data.result.length !== 0) {
@@ -279,11 +280,15 @@ class Page extends React.Component {
     this.setState({showMessage: true})
   }
 
+  setBranch = () =>{
+    this.setState({branch_code : sessionStorage.getItem("branch")});
+  }
+
   render() {
     let driveMenu = this.state.drives.map((drives, index) => (
       <option key={index} value={drives.drive_id}>{drives.company}</option>
     ));
-    console.log(this.state.branch_code);
+    console.log(this.state.studentDetails.length);
     return (
       <div>
         <div className="ui container">
@@ -318,7 +323,7 @@ class Page extends React.Component {
               <option value="">Select Drive</option>
               {driveMenu}
             </select>
-            {sessionStorage.getItem("branch") === null ? (
+            {sessionStorage.getItem("branch") === "null" ? (
               <div>
                 <br />
                 <label>Select Branch : </label>
@@ -339,7 +344,7 @@ class Page extends React.Component {
               </div>
             ) : (
               <div>
-                {this.setState({branch_code : sessionStorage.getItem("branch")})}
+                {this.setBranch}
               </div>
             )}
             <br />
