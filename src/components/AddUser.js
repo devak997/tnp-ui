@@ -61,7 +61,6 @@ class AddUser extends React.Component {
               onChange={e => this.setState({ branch: e.target.value })}
             >
               <option value="">Select Branch</option>
-              <option value="TPO">TPO</option>
               <option value="05">CSE</option>
               <option value="12">IT</option>
               <option value="04">ECE </option>

@@ -107,7 +107,8 @@ class Page extends React.Component {
               round_name: this.state.studentDetails[i].round_name,
               attendanceStatus: this.state.studentDetails[i].attendance_status,
               selected: this.state.studentDetails[i].selected,
-              offer_letter: this.state.studentDetails[i].offer_letter
+              offer_letter: this.state.studentDetails[i].offer_letter,
+              userRole : sessionStorage.getItem("userRole")
             };
             tnpbase
               .post("/drives/performance/editDetail", data)
