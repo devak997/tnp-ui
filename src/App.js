@@ -108,10 +108,10 @@ class App extends React.Component {
           sessionStorage.setItem("login", true);
           sessionStorage.setItem("currentUser", res.data.user);
           sessionStorage.setItem("userRole", res.data.role);
+          sessionStorage.setItem("branch",res.data.branch);
           // window.location.reload();
           this.props.history.push("/");
         }
-        console.log(res.data.status)
         this.setState({ loginError: res.data.status });
       })
       .catch(err => {
