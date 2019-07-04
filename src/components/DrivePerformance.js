@@ -282,6 +282,7 @@ class Page extends React.Component {
     let driveMenu = this.state.drives.map((drives, index) => (
       <option key={index} value={drives.drive_id}>{drives.company}</option>
     ));
+    console.log(this.state.branch_code);
     return (
       <div>
         <div className="ui container">
@@ -316,14 +317,17 @@ class Page extends React.Component {
               <option value="">Select Drive</option>
               {driveMenu}
             </select>
-            {sessionStorage.getItem("branch") === 0 ? (
+            {sessionStorage.getItem("branch") === null ? (
               <div>
+                <br />
+                <label>Select Branch : </label>
                 <select
                 placeholder = "Select Branch"
                 value = {this.state.branch_code}
                 onChange ={ e =>{
-                  this.setState({branch_code : e.target.value})
+                  this.setState({branch_code : e.target.value});
                 }}>
+                  <option value = "">Select Branch</option>
                   <option value={Number('5' )}>CSE</option>
                   <option value={Number('12')}>IT</option>
                   <option value={Number('4' )}>ECE</option>
@@ -334,6 +338,7 @@ class Page extends React.Component {
               </div>
             ) : (
               <div>
+                {this.setState({branch_code : sessionStorage.getItem("branch")})}
               </div>
             )}
             <br />
