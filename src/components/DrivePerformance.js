@@ -4,11 +4,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import tnpbase from "../api/tnpbase";
 import ErrorDisplay from './ui_utils/ErrorDisplay';
 
+
 class Page extends React.Component {
   state = {
     drive_id: 0,
     drives: [],
     rounds: [],
+    branch_code : -1,
     date: null,
     studentDetails: [],
     values: ["P", "A"],
@@ -24,7 +26,8 @@ class Page extends React.Component {
 
   getDriveData = () => {
     let data = {
-      drive_id: this.state.drive_id
+      drive_id: this.state.drive_id,
+      branch_code : this.state.branch_code
     };
     tnpbase
       .post("/drives/performance/driveDetails", data)
@@ -279,7 +282,6 @@ class Page extends React.Component {
     let driveMenu = this.state.drives.map((drives, index) => (
       <option key={index} value={drives.drive_id}>{drives.company}</option>
     ));
-
     return (
       <div>
         <div className="ui container">
@@ -314,6 +316,26 @@ class Page extends React.Component {
               <option value="">Select Drive</option>
               {driveMenu}
             </select>
+            {sessionStorage.getItem("branch") === 0 ? (
+              <div>
+                <select
+                placeholder = "Select Branch"
+                value = {this.state.branch_code}
+                onChange ={ e =>{
+                  this.setState({branch_code : e.target.value})
+                }}>
+                  <option value={Number('5' )}>CSE</option>
+                  <option value={Number('12')}>IT</option>
+                  <option value={Number('4' )}>ECE</option>
+                  <option value={Number('3' )}>MECH</option>
+                  <option value={Number('1' )}>CIVIL</option>
+                  <option value={Number('2' )}>EEE</option>
+                </select>
+              </div>
+            ) : (
+              <div>
+              </div>
+            )}
             <br />
             <button className="ui button" onClick={() => {
               this.enableTable();
