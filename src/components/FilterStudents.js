@@ -134,13 +134,13 @@ class FilterStudents extends React.Component {
   submitFilterDetails = formValues => {
     this.setState({ submitted: true, loading: true });
     const data = {
-      btech_score: parseInt(formValues.btechScore),
+      btech_score: parseFloat(formValues.btechScore),
       btech_score_type: formValues.btechScoreType,
       branch: formValues.selectedBranches,
       backlogs: parseInt(formValues.backlogs),
-      class12_score: parseInt(formValues.class12Score),
+      class12_score: parseFloat(formValues.class12Score),
       class12_score_type: formValues.class12ScoreType,
-      class10_score: parseInt(formValues.class10Score),
+      class10_score: parseFloat(formValues.class10Score),
       class10_score_type: formValues.class10ScoreType,
       eamcet_rank: parseInt(formValues.eamcetRank),
       gender: formValues.gender,

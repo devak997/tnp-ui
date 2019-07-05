@@ -130,7 +130,6 @@ class Page extends React.Component {
                 ].offer_letter;
                 this.getDrives(this.state.date);
                 this.setState({ detailEdit: ups });
-                window.alert('Submit successfull');
               });
           }}
         >
