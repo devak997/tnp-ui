@@ -219,7 +219,6 @@ class FilterStudents extends React.Component {
       })
       .then(res => {
         if (res.status === 200) {
-          console.log(res.data);
           this.setState({
             message: res.data.status,
             loading: false
