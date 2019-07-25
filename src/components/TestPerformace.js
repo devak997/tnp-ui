@@ -7,6 +7,7 @@ class TestPerformance extends React.Component {
     branch_code: '',
     years: [],
     testNames: [],
+    testDetails : [],
     subj: '',
     subjects: [],
     yop: '',
@@ -73,6 +74,18 @@ class TestPerformance extends React.Component {
         window.alert('Error' + err);
       })
 
+  }
+
+  getTestDetails = () =>{
+    let data = { branch_code: this.state.branch_code, subject: this.state.subj, yop: this.state.yop };
+    tnpbase
+     .post('/tests/subs/include',data)
+     .then(res =>{
+        this.setState({testDetails : res.data.subject_count});
+     })
+     .catch(err =>{
+       console.log(err);
+     })
   }
 
   getData = () => {
@@ -145,7 +158,7 @@ class TestPerformance extends React.Component {
     if (this.state.submitted === false) {
       return (
         <tr>
-          <td colSpan={2}>Submit cheyandi mundu </td>
+          <td colSpan={2}>Submit to view</td>
         </tr>
       );
     } else {
@@ -188,9 +201,7 @@ class TestPerformance extends React.Component {
         for (let j = 0; j < this.state.subjects.subjects.length; j++) {
           if (typeof (values[this.state.testNames[i]]) !== 'undefined') {
             if (typeof (values[this.state.testNames[i]][this.state.subjects.subjects[j]]) === 'undefined'){
-              temp.push(
-                <td key={j}>{0}</td>
-              );
+              
             }
             else {
               temp.push(
@@ -212,12 +223,10 @@ class TestPerformance extends React.Component {
       for(let i=0;i<this.state.testNames.length;i++){
         if (typeof (values[this.state.testNames[i]]) !== 'undefined') {
           if (typeof (values[this.state.testNames[i]][this.state.showTable.subject]) === 'undefined'){
-            temp.push(
-              <td key={i}>{0}</td>
-            );
+
           }
           else {
-            temp.push( <td key={i} colSpan={this.state.subjects.subjects.length}>{values[this.state.testNames[i]][this.state.showTable.subject]}</td>);
+            temp.push( <td key={i} colSpan={1}>{values[this.state.testNames[i]][this.state.showTable.subject]}</td>);
           }
         } else {
           temp.push(
@@ -236,14 +245,28 @@ class TestPerformance extends React.Component {
       return 
     }
     else{
-      return this.state.testNames.map((test, i) => {
-        return (
-          <th key={i} colSpan={this.state.subjects.subjects.length}>
-            {test}
-          </th>
-        );
-      });
-
+      let tests = Object.keys(this.state.testDetails);
+      let val = Object.values(this.state.testDetails);
+      let subj = this.state.showTable.subject;
+      if(val.length !==0 && subj === 'all'){
+        return tests.map((test, i) => {
+          return (
+            <th key={i} colSpan={val[i].length}>
+              {test}
+            </th>
+          );
+        });
+      } else{
+        return tests.map((test,i)=>{
+          if(val[i].includes(subj)){
+            return (
+              <th key={i} colSpan={1}>
+                {test}
+              </th>
+            );
+          }
+        });
+      }
     }
   }
 
@@ -251,24 +274,27 @@ class TestPerformance extends React.Component {
     if(this.state.submitted !== true){
       return
     } else{
-      if (this.state.showTable.subject === 'all' && this.state.subjects.length !== 0) {
-        let subjects = this.state.subjects.subjects.map((sub, i) => (
-          <th key={i}>{sub}</th>
-        ));
-        let list = []
-        let i = 0;
-        for (i = 0; i < this.state.testNames.length; i++) {
-          list.push(subjects);
+      let tests = Object.keys(this.state.testDetails);
+      let val = Object.values(this.state.testDetails);
+      let subj = this.state.showTable.subject;
+      let list = [];
+      if (subj === 'all' && val.length !== 0) {
+        for(let i = 0; i<tests.length;i++){
+          for(let j = 0;j<val[i].length;j++){
+            list.push(<th key={i} colSpan={1}>{val[i][j]}</th>);
+          }
         }
-  
         return list.map((ele) => {
           return ele;
         })
       } else {
         let list = []
         let i = 0;
-        for (i = 0; i < this.state.testNames.length; i++) {
-          list.push(<th key={i} colSpan={this.state.subjects.subjects.length}>{this.state.showTable.subject}</th>);
+        if(val.length!==0){
+          for (i = 0; i < this.state.testNames.length; i++) {
+            if(val[i].includes(subj))
+              list.push(<th key={i} colSpan={1}>{this.state.showTable.subject}</th>);
+          }
         }
         return list.map((ele) => {
           return ele;
@@ -368,6 +394,7 @@ class TestPerformance extends React.Component {
           <br />
           <button className="ui button" onClick={() => {
             this.enableContents();
+            this.getTestDetails();
             this.getData();
           }
           }>
@@ -381,7 +408,7 @@ class TestPerformance extends React.Component {
         <div>
           <br />
           <div className="ui rounded container">
-            <table className="ui blue celled structured striped compact table" style={{overflowX:'scroll'}}>
+            <table className="ui blue celled structured striped compact table" style={{overflowX:'scroll','display': 'block'}}>
               <thead style={{ textAlign: "center" }}>
                 <tr>
                   <th rowSpan={2}>Roll no.</th>

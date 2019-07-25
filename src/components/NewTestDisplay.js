@@ -10,33 +10,40 @@ class NewTestDisplay extends React.Component{
     loading: false,
     error: "",
     message: "",
-    submitted: false
+    submitted: false,
+    showMsg : false
   }
 
   selectFiles = files =>{
     this.setState({file : files})
   }
 
+  handleXClick = () =>{
+    this.setState({showMsg:false});
+  }
+
   displayStatus = () =>{
-    if (this.state.submitted) {
-      if (this.state.loading) {
-        return <h1>Loading</h1>;
-      } else if (this.state.error !== "") {
-        return (
-          <ErrorDisplay
-            headerData={this.state.error}
-            message={this.state.message}
-            showTry={false}
-            handleXClick={this.state.handleXClick}
-          />
-        );
-      } else {
-        return (
-          <SuccessMessage
-            message={this.state.message}
-            handleXClick={this.state.handleXClick}
-          />
-        );
+    if(this.state.showMsg){
+      if (this.state.submitted) {
+        if (this.state.loading) {
+          return <h1>Loading</h1>;
+        } else if (this.state.error !== "") {
+          return (
+            <ErrorDisplay
+              headerData={this.state.error}
+              message={this.state.message}
+              showTry={false}
+              handleXClick={this.handleXClick}
+            />
+          );
+        } else {
+          return (
+            <SuccessMessage
+              message={this.state.message}
+              handleXClick={this.handleXClick}
+            />
+          );
+        }
       }
     }
   }
@@ -67,6 +74,7 @@ class NewTestDisplay extends React.Component{
   }
 
   submitData = () =>{
+    this.setState({showMsg:true});
     const formData = new FormData();
     Object.keys(this.state.file).forEach(key => {
       const file = this.state.file[key];
@@ -80,9 +88,9 @@ class NewTestDisplay extends React.Component{
     tnpbase 
       .post('/test/addData',formData)
       .then(res => {
+        this.setState({submitted : true,loading : true});
         if (res.status === 200) {
           this.setState({
-            file : [],
             loading: false,
             message: res.data.status,
             error: ""
