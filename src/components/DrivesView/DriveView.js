@@ -9,7 +9,7 @@ import {
 } from "../../actions";
 
 class DriveView extends React.Component {
-  state = { drives: [] };
+  state = { drives: [], viewType: 1 };
   deleteRound = (drive_id, round_id, noOfRounds, driveYear) => {
     const data = { drive_id, round_id, noOfRounds };
     tnpbase
@@ -31,11 +31,12 @@ class DriveView extends React.Component {
         .then(res => {
           if (res.status === 200) {
             if (res.data.result.length === 0) {
-              this.setState({drives: res.data.result});
+              this.setState({drives: res.data.result, viewType: 1});
               window.alert("No upcoming drives");
             } else if (res.data.result.length !== 0) {
               this.setState({
-                drives: res.data.result
+                drives: res.data.result,
+                viewType: 1
               });
             }
           } else {
@@ -51,11 +52,12 @@ class DriveView extends React.Component {
         .then(res => {
           if (res.status === 200) {
             if (res.data.result.length === 0) {
-              this.setState({drives: res.data.result});
+              this.setState({drives: res.data.result, viewType: 0});
               window.alert("No drives");
             } else if (res.data.result.length !== 0) {
               this.setState({
-                drives: res.data.result
+                drives: res.data.result,
+                viewType: 0
               });
             }
           } else {
@@ -118,6 +120,7 @@ class DriveView extends React.Component {
           submitData={this.submitData}
           deleteDrive={this.deleteDrive}
           drives={this.state.drives}
+          viewType={this.state.viewType}
           fetchDrives={this.getDrives}
         />
       </div>

@@ -84,7 +84,7 @@ const displayDriveRounds = (props, driveIndex, drive) => {
                 {round.round_name}
                 <button
                   className="mini ui right floated icon button"
-                  style={{ padding: 2.5,  display: props.driveYear==="upcoming" ? "" : "none" }}
+                  style={{ padding: 2.5,  display: props.viewType=== 1 ? "" : "none" }}
                   onClick={() => {
                     props.deleteRound(
                       drive.drive_id,
@@ -114,7 +114,7 @@ const displayDriveRounds = (props, driveIndex, drive) => {
 
 const displayButtons = (props, driveIndex, drive) => {
   return (
-    <td style={{ display: props.driveYear === "upcoming" ? "" : "none" }}>
+    <td style={{ display: props.viewType === 1 ? "" : "none" }}>
       {props.showAddRound === driveIndex + 1 ||
       props.editable === driveIndex + 1 ? (
         <div className="ui basic icon buttons">
@@ -238,7 +238,7 @@ const DriveViewForm = props => {
             <th>Rounds</th>
             <th>Type</th>
             <th>Remarks</th>
-            <th style={{ display: props.driveYear==="upcoming" ? "" : "none" }}>Action</th>
+            <th style={{ display: props.viewType === 1 ? "" : "none" }}>Action</th>
           </tr>
         </thead>
         <tbody>{displayDrives(props)}</tbody>
