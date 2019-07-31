@@ -25,7 +25,7 @@ class SearchStudent extends React.Component {
   };
 
   handleXClick = () => {
-    this.setState({ submitted: false });
+    this.setState({ submitted: false , rollNumber : ''});
   };
 
   displayMessage = () => {
@@ -38,7 +38,7 @@ class SearchStudent extends React.Component {
             headerData={this.state.error}
             message={this.state.message}
             showTry={false}
-            handleXclick={this.handleXclick}
+            handleXClick={this.handleXClick}
           />
         );
       }
@@ -58,7 +58,7 @@ class SearchStudent extends React.Component {
           submitted : true, loading : true
         });
         if(response.status === 200){
-          if(response.data.result.length !== 0){
+          if(response.data.result){
             this.setState({
               loading : false,
               message : response.data.status,
@@ -68,8 +68,9 @@ class SearchStudent extends React.Component {
             });
           } else {
             this.setState({
-              personalDetails : [] , driveDetails : []
-            })
+              personalDetails : [] , driveDetails : [],loading : false,
+              error : "Invalid Number",message:response.data.status
+            });
           }
         } else {
           this.setState({
@@ -95,7 +96,6 @@ class SearchStudent extends React.Component {
     tnpbase 
       .post("/drive/rounds",data)
       .then((res) => {
-        console.log(res)
         this.setState({
           rounds : res.data.result
         });
@@ -199,7 +199,6 @@ class SearchStudent extends React.Component {
   }
 
   driveButtonHandle = (detail,driveIndex) =>{
-
       return(
         this.state.driveEditDetail === driveIndex ? (
           <div className="ui basic icon buttons">
@@ -209,8 +208,9 @@ class SearchStudent extends React.Component {
             onClick={() => {
               let ups = this.state.driveDetails;
               ups[driveIndex] = detail;
-
+              
               const data = {ups, HTNO : this.state.rollNumber}
+              console.log(data);
               tnpbase 
                 .post('search/student/driveEditDetail',data)
                 .then(()=>{
@@ -420,6 +420,10 @@ class SearchStudent extends React.Component {
             >
               Search
             </button>
+          </div>
+          <div>
+            <br/>
+            {this.displayMessage()}
           </div>
         </div>
         <div>

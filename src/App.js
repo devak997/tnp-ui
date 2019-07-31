@@ -16,6 +16,8 @@ import RoundsConfigDisplay from "./components/RoundsConfig";
 
 import DrivePerformanceDisplay from "./components/DrivePerformance";
 
+import AddTest from "./components/AddTest";
+import SubjectConfig from "./components/SubjectConfig";
 import NewTestDisplay from "./components/NewTestDisplay";
 import TestPerformaceDisplay from "./components/TestPerformace";
 
@@ -154,6 +156,8 @@ class App extends React.Component {
             path="/drives/performance"
             component={DrivePerformanceDisplay}
           />
+          <Route path="/tests/add" component={AddTest} />
+          <Route path="/subjects/config" component={SubjectConfig} />
           <Route path="/tests/new" component={NewTestDisplay} />
           <Route path="/tests/performance" component={TestPerformaceDisplay} />
           <Route path="/user/reset" component={ResetUser} />
@@ -177,11 +181,13 @@ class App extends React.Component {
               />
             )}
           />
+          <Route path="/tests/add" component={AddTest} />
           <Route path="/students/search" component={SearchStudentDisplay} />
           <Route path="/students/filter" component={FilterStudentsDisplay} />
           <Route path="/drives/add" component={AddDriveDisplay} />
           <Route path="/drives/view" component={DriveViewDisplay} />
           <Route path="/rounds/config" component={RoundsConfigDisplay} />
+          <Route path="/subjects/config" component={SubjectConfig} />
           <Route
             path="/drives/performance"
             component={DrivePerformanceDisplay}

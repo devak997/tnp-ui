@@ -64,6 +64,12 @@ const SideBar = props => {
       <div className="item">
         <div className="header">Training Tests</div>
         <div className="menu">
+        <Link to="/tests/add" className="item">
+            Add Test
+          </Link>
+        <Link to="/subjects/config" className="item">
+            Subject Config
+          </Link>
           <Link
             to="/tests/new"
             className="item"
