@@ -12,11 +12,14 @@ class TestPerformance extends React.Component {
     subjects: [],
     yop: "",
     testData: [],
+    searchData: [],
     loading: false,
     error: "",
     message: "",
+    rollNumber: "",
     submitted: false,
     showTable: [],
+    searchStat: false,
     maxPages: 0,
     page: 1
   };
@@ -53,24 +56,6 @@ class TestPerformance extends React.Component {
     });
   };
 
-  getTestNames = branch_code => {
-    let data = { branch: branch_code, year: this.state.yop };
-    tnpbase
-      .post("/tests", data)
-      .then(res => {
-        if (res.data.tests.length === 0) {
-          window.alert("No tests");
-          this.setState({ testNames: [], testData: [] });
-        } else {
-          this.setState({ testNames: res.data.tests });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        window.alert("Error" + err);
-      });
-  };
-
   getTestDetails = () => {
     let data = {
       branch_code: this.state.branch_code,
@@ -101,10 +86,10 @@ class TestPerformance extends React.Component {
       .then(res => {
         this.setState({ submitted: true, loading: true });
         if (res.status === 200) {
-          console.log("Vachsav");
           if (res.data.testData.length !== 0) {
             this.setState({
               testData: res.data.testData,
+              page: 1,
               maxPages: Math.ceil(res.data.testData.length / 10),
               loading: false,
               message: res.data.status,
@@ -151,7 +136,10 @@ class TestPerformance extends React.Component {
   displayMessage = () => {
     if (this.state.submitted) {
       if (this.state.loading) {
-        return <h1>Loading . . .</h1>;
+          return (<div>
+            <h1>Loading . . .</h1>
+            <p>Don't refresh or perform any other activity</p>
+          </div>);
       } else if (this.state.error !== "") {
         return (
           <ErrorDisplay
@@ -180,14 +168,19 @@ class TestPerformance extends React.Component {
       if (this.state.testData.length === 0) {
         return (
           <tr>
-            <td colSpan={this.state.testNames.length + 2}>It's Lonely Here</td>
+            <td colSpan={2}>No records found</td>
           </tr>
         );
       }
-      let studentData = this.state.testData;
+      let studentData = [];
+      if (this.state.searchStat) {
+        studentData = this.state.searchData;
+      } else {
+        studentData = this.state.testData;
+      }
       let page = this.state.page;
       return studentData.map((data, index) => {
-        if (index >= (page - 1) * 10 && index <= page * 10) {
+        if (index >= (page - 1) * 10 && index < page * 10) {
           return (
             <tr key={index}>
               <td>{data.rollNumber}</td>
@@ -201,7 +194,7 @@ class TestPerformance extends React.Component {
   };
 
   displayMarks = values => {
-    const tests = Object.keys(values);
+    let tests = Object.keys(values);
     tests.pop();
     tests.splice(0, 1);
     let scores = Object.values(values);
@@ -210,6 +203,7 @@ class TestPerformance extends React.Component {
     scores = scores[0];
     let temp = [];
     let subs = this.state.showTable.subject;
+    let itr = 0;
     if (subs === "all") {
       for (let i = 0; i < this.state.testNames.length; i++) {
         for (let j = 0; j < this.state.subjects.subjects.length; j++) {
@@ -219,9 +213,11 @@ class TestPerformance extends React.Component {
                 this.state.subjects.subjects[j]
               ] === "undefined"
             ) {
+              console.log(values[this.state.testNames[i]][this.state.subjects.subjects[j]]);
+              temp.push(<td key={itr++}>0</td>);
             } else {
               temp.push(
-                <td key={j}>
+                <td key={itr++}>
                   {
                     values[this.state.testNames[i]][
                       this.state.subjects.subjects[j]
@@ -246,9 +242,10 @@ class TestPerformance extends React.Component {
               this.state.showTable.subject
             ] === "undefined"
           ) {
+            temp.push(<td key={itr++}>0</td>);
           } else {
             temp.push(
-              <td key={i} colSpan={1}>
+              <td key={itr++} colSpan={1}>
                 {values[this.state.testNames[i]][this.state.showTable.subject]}
               </td>
             );
@@ -300,11 +297,12 @@ class TestPerformance extends React.Component {
       let val = Object.values(this.state.testDetails);
       let subj = this.state.showTable.subject;
       let list = [];
+      let sub_itr = 0;
       if (subj === "all" && val.length !== 0) {
         for (let i = 0; i < tests.length; i++) {
           for (let j = 0; j < val[i].length; j++) {
             list.push(
-              <th key={i} colSpan={1}>
+              <th key={sub_itr++} colSpan={1}>
                 {val[i][j]}
               </th>
             );
@@ -351,7 +349,7 @@ class TestPerformance extends React.Component {
   };
 
   pageCount = () => {
-    if (this.state.testData.length === 0) {
+    if (this.state.testData.length === 0 || this.state.searchStat) {
       return (
         <a key={0} className="disabled item">
           {1}
@@ -387,13 +385,55 @@ class TestPerformance extends React.Component {
     }
   };
 
+  getStudentData = () => {
+    let ups = this.state.testData;
+    const data = this.state.testData.filter(
+      record => record.rollNumber === this.state.rollNumber
+    );
+    this.setState({ searchStat: true, searchData: data, page: 1 });
+  };
+
+  search = () => {
+    if (this.state.submitted) {
+        return (
+          <div
+            className="ui action input "
+            style={{ float: "right", padding: "1%" }}
+          >
+            <input
+              type="text"
+              placeholder="Enter roll no."
+              value={this.state.rollNumber}
+              onChange={e => {
+                this.setState({ rollNumber: e.target.value.toUpperCase() });
+              }}
+            />
+            <button
+              className="ui secondary button"
+              onClick={this.getStudentData}
+            >
+              Search
+            </button>
+            <button
+              className="ui button"
+              onClick={() => {
+                this.setState({ searchStat: false });
+              }}
+            >
+              <i className="x icon" />
+            </button>
+          </div>
+        );   
+  };
+}
+
   render() {
     return (
       <div className="ui container">
         <h3 className="ui center aligned icon header">
           <i className="cogs icon" />
           <div className="content">
-            TestPerformance Performance
+            Test Performance
             <div className="sub header">Student Performance in tests</div>
           </div>
         </h3>
@@ -418,7 +458,6 @@ class TestPerformance extends React.Component {
               value={this.state.branch_code}
               onChange={e => {
                 this.getSubjects(e.target.value);
-                this.getTestNames(e.target.value);
                 this.setState({ branch_code: e.target.value });
               }}
             >
@@ -461,6 +500,7 @@ class TestPerformance extends React.Component {
           <br />
           {this.displayMessage()}
         </div>
+        <div>{this.search()}</div>
         <div>
           <br />
           <div className="ui rounded container">
@@ -468,7 +508,7 @@ class TestPerformance extends React.Component {
               className="ui blue celled  striped compact table"
               style={{ overflowX: "scroll" }}
             >
-              <thead style={{ textAlign: "center" }}>
+              <thead style={{ textAlign: "center" }} id="markDetails">
                 <tr>
                   <th rowSpan={2}>Roll no.</th>
                   {this.testsDisplay()}

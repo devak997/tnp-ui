@@ -3,6 +3,7 @@ import SuccessMessage from "./ui_utils/SuccessMessage";
 import ErrorDisplay from "./ui_utils/ErrorDisplay";
 import tnpbase from "../api/tnpbase";
 import TestUpload from "./TestUpload";
+import { timeout } from "q";
 
 class NewTestDisplay extends React.Component {
   state = {
@@ -81,7 +82,10 @@ class NewTestDisplay extends React.Component {
     if (this.state.showMsg) {
       if (this.state.submitted) {
         if (this.state.loading) {
-          return <h1>Loading. . .</h1>;
+          return (<div>
+            <h1>Loading . . .</h1>
+            <p>Don't refresh or perform any other activity</p>
+          </div>);
         } else if (this.state.error !== "") {
           return (
             <ErrorDisplay
@@ -164,7 +168,7 @@ class NewTestDisplay extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.message,err.name);
         this.setState({
           loading: false,
           error: "Unable to submit data",
