@@ -3,7 +3,6 @@ import SuccessMessage from "./ui_utils/SuccessMessage";
 import ErrorDisplay from "./ui_utils/ErrorDisplay";
 import tnpbase from "../api/tnpbase";
 import TestUpload from "./TestUpload";
-import { timeout } from "q";
 
 class NewTestDisplay extends React.Component {
   state = {

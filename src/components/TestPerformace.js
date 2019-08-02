@@ -1,6 +1,7 @@
 import React from "react";
 import tnpbase from "../api/tnpbase";
 import ErrorDisplay from "./ui_utils/ErrorDisplay";
+import ExportCSV from "./ExportCSV"
 
 class TestPerformance extends React.Component {
   state = {
@@ -21,6 +22,8 @@ class TestPerformance extends React.Component {
     showTable: [],
     searchStat: false,
     maxPages: 0,
+    fileName : "",
+    csData : [],
     page: 1
   };
 
@@ -213,7 +216,6 @@ class TestPerformance extends React.Component {
                 this.state.subjects.subjects[j]
               ] === "undefined"
             ) {
-              console.log(values[this.state.testNames[i]][this.state.subjects.subjects[j]]);
               temp.push(<td key={itr++}>0</td>);
             } else {
               temp.push(
@@ -227,7 +229,7 @@ class TestPerformance extends React.Component {
               );
             }
           } else {
-            temp.push(<td>Absent</td>);
+            temp.push(<td key={itr++}>Absent</td>);
           }
         }
       }
@@ -251,7 +253,7 @@ class TestPerformance extends React.Component {
             );
           }
         } else {
-          temp.push(<td>Absent</td>);
+          temp.push(<td key={itr++}>Absent</td>);
         }
       }
       return temp.map(val => {
@@ -386,7 +388,6 @@ class TestPerformance extends React.Component {
   };
 
   getStudentData = () => {
-    let ups = this.state.testData;
     const data = this.state.testData.filter(
       record => record.rollNumber === this.state.rollNumber
     );
@@ -506,7 +507,7 @@ class TestPerformance extends React.Component {
           <div className="ui rounded container">
             <table
               className="ui blue celled  striped compact table"
-              style={{ overflowX: "scroll" }}
+              // style={{ overflowX: "auto", 'display':'block' }}
             >
               <thead style={{ textAlign: "center" }} id="markDetails">
                 <tr>
@@ -528,6 +529,25 @@ class TestPerformance extends React.Component {
           </div>
           <br />
           <br />
+        </div>
+        <div
+            className="ui action input "
+            style={{ float: "right", padding: "1%" }}
+          >
+            <input
+              type="text"
+              placeholder="Enter file name"
+              value={this.state.fileName}
+              onChange={e => {
+                this.setState({ fileName: e.target.value });
+              }}
+            />
+        <ExportCSV
+          csvData = {this.state.testData}
+          testDetails = {this.state.testDetails}
+          subject = {this.state.showTable.subject}
+          subs = {this.state.subjects.subjects}
+          fileName = {this.state.fileName}/>
         </div>
       </div>
     );
