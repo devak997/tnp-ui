@@ -13,9 +13,10 @@ const dataModify = props => {
     temp.push("Roll Number");
     for (let i = 0; i < Object.keys(tests).length; i++) {
       for (let j = 0; j < Object.values(tests)[i].length; j++) {
-        if (j === Math.ceil(Object.values(tests).length))
+        if (j+1 === Math.ceil(Object.values(tests)[i].length/2))
           temp.push(Object.keys(tests)[i]);
-        else temp.push("");
+        else 
+          temp.push("");
       }
     }
     temp.push("Average");
@@ -33,7 +34,7 @@ const dataModify = props => {
     for (let i = 0; i < students.length; i++) {
       temp.push(students[i].rollNumber);
       for (let j = 0; j < Object.keys(tests).length; j++) {
-        for (let k = 0; k < subjects.length; k++) {
+        for (let k = 0; k < Object.values(tests)[j].length; k++) {
           if (typeof students[i][Object.keys(tests)[j]] !== "undefined") {
             if (
               typeof students[i][Object.keys(tests)[j]][subjects[k]] ===

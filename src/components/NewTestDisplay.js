@@ -282,8 +282,13 @@ class NewTestDisplay extends React.Component {
             <button
               className="ui blue labeled icon right floated  button"
               onClick={() => {
-                this.enableMessage();
-                this.submitData();
+                if(this.state.test_id !== '')
+                {
+                  this.enableMessage();
+                  this.submitData();
+                } else {
+                  window.alert("Select test");
+                }
               }}
             >
               <i className="upload icon" />

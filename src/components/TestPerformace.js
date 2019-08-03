@@ -186,9 +186,9 @@ class TestPerformance extends React.Component {
         if (index >= (page - 1) * 10 && index < page * 10) {
           return (
             <tr key={index}>
-              <td>{data.rollNumber}</td>
+              <td style={{}}>{data.rollNumber}</td>
               {this.displayMarks(data)}
-              <td>{data.avg}</td>
+              <td >{data.avg}</td>
             </tr>
           );
         }
@@ -209,7 +209,7 @@ class TestPerformance extends React.Component {
     let itr = 0;
     if (subs === "all") {
       for (let i = 0; i < this.state.testNames.length; i++) {
-        for (let j = 0; j < this.state.subjects.subjects.length; j++) {
+        for (let j = 0; j < Object.values(this.state.testDetails)[i].length; j++) {
           if (typeof values[this.state.testNames[i]] !== "undefined") {
             if (
               typeof values[this.state.testNames[i]][
@@ -418,7 +418,7 @@ class TestPerformance extends React.Component {
             <button
               className="ui button"
               onClick={() => {
-                this.setState({ searchStat: false });
+                this.setState({ searchStat: false , rollNumber :"" });
               }}
             >
               <i className="x icon" />
@@ -504,16 +504,16 @@ class TestPerformance extends React.Component {
         <div>{this.search()}</div>
         <div>
           <br />
-          <div className="ui rounded container">
+          <div className="ui rounded container" style={{ overflowX: "auto", 'display':'block' }}>
             <table
               className="ui blue celled  striped compact table"
-              // style={{ overflowX: "auto", 'display':'block' }}
+              
             >
               <thead style={{ textAlign: "center" }} id="markDetails">
                 <tr>
-                  <th rowSpan={2}>Roll no.</th>
+                  <th rowSpan={2}  style={{}}>Roll no.</th>
                   {this.testsDisplay()}
-                  <th rowSpan={2}>Average</th>
+                  <th rowSpan={2} >Average</th>
                 </tr>
                 <tr>{this.subjDisplay()}</tr>
               </thead>
