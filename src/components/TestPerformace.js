@@ -238,6 +238,7 @@ class TestPerformance extends React.Component {
       });
     } else {
       for (let i = 0; i < this.state.testNames.length; i++) {
+        // console.log(this.state.testNames[i],this.state.testDetails , typeof values[this.state.testNames[i]])
         if (typeof values[this.state.testNames[i]] !== "undefined") {
           if (
             typeof values[this.state.testNames[i]][

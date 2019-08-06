@@ -150,7 +150,6 @@ class NewTestDisplay extends React.Component {
     tnpbase
       .post("/test/addData", formData)
       .then(res => {
-        console.log(res)
         this.setState({ submitted: true, loading: true });
         if (res.status === 200) {
           this.setState({
