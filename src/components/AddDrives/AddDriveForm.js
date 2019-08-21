@@ -4,6 +4,7 @@ import { Field, reduxForm, formValueSelector } from "redux-form";
 import { IconInput, DatePickerNew, CheckBox, Select } from "../ui_utils/";
 import SuccessMessage from "../ui_utils/SuccessMessage";
 import ErrorDisplay from "../ui_utils/ErrorDisplay";
+import { normalize } from "path";
 
 const displayStatus = props => {
   if (props.mySubmitted) {
@@ -85,10 +86,11 @@ const AddDriveForm = props => {
         type="number"
         placeholder="No. of Rounds"
         name="noOfRounds"
-        label="No. of Rounds (between 2 and 8)"
+        label="No. of Rounds (between 2 and 10)"
         required
         iconName="spinner"
-        customProps={{ min: 2, max: 8 }}
+        customProps={{ min: 2, max: 10 }}
+        normalize={value => value>=10 ? 10 : value}
       />
       <h4 className="ui dividing header">Select Rounds</h4>
       <div className="two fields">{displaySelectRounds(props)}</div>

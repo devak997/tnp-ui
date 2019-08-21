@@ -146,8 +146,7 @@ class SearchStudent extends React.Component {
               }}
             >
               <i className="pencil alternate icon" />
-              Edit
-              </button>
+               </button>
           </div>
         )
     );
@@ -210,7 +209,6 @@ class SearchStudent extends React.Component {
               ups[driveIndex] = detail;
               
               const data = {ups, HTNO : this.state.rollNumber}
-              console.log(data);
               tnpbase 
                 .post('search/student/driveEditDetail',data)
                 .then(()=>{
@@ -244,7 +242,6 @@ class SearchStudent extends React.Component {
               }}
             >
               <i className="pencil alternate icon" />
-              Edit
               </button>
           </div>
         )

@@ -373,7 +373,8 @@ class FilterStudents extends React.Component {
             Filter
           </button>
         </div>
-        <table className="ui blue celled structured striped compact table">
+        <table className="ui blue celled structured striped compact table" style={{ display: 'block', overflowX: 'auto',
+        whiteSpace: 'nowrap'}}>
           <thead style={{ textAlign: "center" }}>
             <tr>
               <th rowSpan={2}>SNO</th>
@@ -408,7 +409,9 @@ class FilterStudents extends React.Component {
               this.showFilteredStudents()
             )}
           </tbody>
-          <tfoot
+        </table>
+        <table className="ui table ">
+        <tfoot
             className="full-width"
             style={{
               display: this.state.filteredStudents.length === 0 ? "none" : ""
