@@ -1,7 +1,7 @@
 import React from "react";
 import tnpbase from "../api/tnpbase";
 import ErrorDisplay from "./ui_utils/ErrorDisplay";
-import ExportCSV from "./ExportCSV"
+import ExportCSV from "./ExportCSV";
 
 class TestPerformance extends React.Component {
   state = {
@@ -22,8 +22,8 @@ class TestPerformance extends React.Component {
     showTable: [],
     searchStat: false,
     maxPages: 0,
-    fileName : "",
-    csData : [],
+    fileName: "",
+    csData: [],
     page: 1
   };
 
@@ -139,10 +139,12 @@ class TestPerformance extends React.Component {
   displayMessage = () => {
     if (this.state.submitted) {
       if (this.state.loading) {
-          return (<div>
+        return (
+          <div>
             <h1>Loading . . .</h1>
             <p>Don't refresh or perform any other activity</p>
-          </div>);
+          </div>
+        );
       } else if (this.state.error !== "") {
         return (
           <ErrorDisplay
@@ -168,7 +170,7 @@ class TestPerformance extends React.Component {
         </tr>
       );
     } else {
-      if (this.state.testData.length === 0) {
+      if (this.state.testData.length === 0 || (this.state.searchStat === true && this.state.searchData.length === 0)) {
         return (
           <tr>
             <td colSpan={2}>No records found</td>
@@ -182,13 +184,14 @@ class TestPerformance extends React.Component {
         studentData = this.state.testData;
       }
       let page = this.state.page;
+      // eslint-disable-next-line
       return studentData.map((data, index) => {
         if (index >= (page - 1) * 10 && index < page * 10) {
           return (
             <tr key={index}>
               <td style={{}}>{data.rollNumber}</td>
               {this.displayMarks(data)}
-              <td >{data.avg}</td>
+              <td>{data.avg}</td>
             </tr>
           );
         }
@@ -209,7 +212,11 @@ class TestPerformance extends React.Component {
     let itr = 0;
     if (subs === "all") {
       for (let i = 0; i < this.state.testNames.length; i++) {
-        for (let j = 0; j < Object.values(this.state.testDetails)[i].length; j++) {
+        for (
+          let j = 0;
+          j < Object.values(this.state.testDetails)[i].length;
+          j++
+        ) {
           if (typeof values[this.state.testNames[i]] !== "undefined") {
             if (
               typeof values[this.state.testNames[i]][
@@ -280,13 +287,11 @@ class TestPerformance extends React.Component {
         });
       } else {
         return tests.map((test, i) => {
-          if (val[i].includes(subj)) {
-            return (
-              <th key={i} colSpan={1}>
-                {test}
-              </th>
-            );
-          }
+          return (
+            <th key={i} colSpan={1}>
+              {test}
+            </th>
+          );
         });
       }
     }
@@ -354,6 +359,7 @@ class TestPerformance extends React.Component {
   pageCount = () => {
     if (this.state.testData.length === 0 || this.state.searchStat) {
       return (
+        // eslint-disable-next-line
         <a key={0} className="disabled item">
           {1}
         </a>
@@ -364,12 +370,14 @@ class TestPerformance extends React.Component {
       for (let i = 1; i <= maxPage; i++) {
         if (i === this.state.page) {
           temp.push(
+            // eslint-disable-next-line
             <a key={i} className="active item">
               {i}
             </a>
           );
         } else {
           temp.push(
+            // eslint-disable-next-line
             <a
               key={i}
               className="item"
@@ -397,37 +405,66 @@ class TestPerformance extends React.Component {
 
   search = () => {
     if (this.state.submitted) {
-        return (
-          <div
-            className="ui action input "
-            style={{ float: "right", padding: "1%" }}
+      return (
+        <div
+          className="ui action input "
+          style={{ float: "right", padding: "1%" }}
+        >
+          <input
+            type="text"
+            placeholder="Enter roll no."
+            value={this.state.rollNumber}
+            onChange={e => {
+              this.setState({ rollNumber: e.target.value.toUpperCase() });
+            }}
+          />
+          <button className="ui secondary button" onClick={this.getStudentData}>
+            Search
+          </button>
+          <button
+            className="ui button"
+            onClick={() => {
+              this.setState({ searchStat: false, rollNumber: "" });
+            }}
           >
-            <input
-              type="text"
-              placeholder="Enter roll no."
-              value={this.state.rollNumber}
-              onChange={e => {
-                this.setState({ rollNumber: e.target.value.toUpperCase() });
-              }}
-            />
-            <button
-              className="ui secondary button"
-              onClick={this.getStudentData}
-            >
-              Search
-            </button>
-            <button
-              className="ui button"
-              onClick={() => {
-                this.setState({ searchStat: false , rollNumber :"" });
-              }}
-            >
-              <i className="x icon" />
-            </button>
-          </div>
-        );   
+            <i className="x icon" />
+          </button>
+        </div>
+      );
+    }
   };
-}
+
+  sendMail = () => {
+    if (this.state.submitted) {
+      return (
+        <button
+          className="ui secondary button"
+          // style={{ padding: "1%" }}
+          onClick={this.mailSender}
+        >
+          Send Mails
+        </button>
+      );
+    } else {
+      return (
+        <button className="ui secondary button disabled">Send Mails</button>
+      );
+    }
+  };
+
+  mailSender = () => {
+    let data = {
+      HTNO: "17A31A0546"
+    };
+    tnpbase
+      .post("/send/mail", data)
+      .then(() => {
+        console.log("Elepoyindi");
+      })
+      .catch(err => {
+        console.log("Error solve chey firstuu", err);
+      });
+  };
 
   render() {
     return (
@@ -505,16 +542,18 @@ class TestPerformance extends React.Component {
         <div>{this.search()}</div>
         <div>
           <br />
-          <div className="ui rounded container" style={{ overflowX: "auto", 'display':'block' }}>
-            <table
-              className="ui blue celled  striped compact table"
-              
-            >
+          <div
+            className="ui rounded container"
+            style={{ overflowX: "auto", display: "block" }}
+          >
+            <table className="ui blue celled  striped compact table">
               <thead style={{ textAlign: "center" }} id="markDetails">
                 <tr>
-                  <th rowSpan={2}  style={{}}>Roll no.</th>
+                  <th rowSpan={2} style={{}}>
+                    Roll no.
+                  </th>
                   {this.testsDisplay()}
-                  <th rowSpan={2} >Average</th>
+                  <th rowSpan={2}>Average</th>
                 </tr>
                 <tr>{this.subjDisplay()}</tr>
               </thead>
@@ -531,7 +570,9 @@ class TestPerformance extends React.Component {
           <br />
           <br />
         </div>
-        <div
+        <div>
+            {this.sendMail()}
+          <div
             className="ui action input "
             style={{ float: "right", padding: "1%" }}
           >
@@ -543,12 +584,14 @@ class TestPerformance extends React.Component {
                 this.setState({ fileName: e.target.value });
               }}
             />
-        <ExportCSV
-          csvData = {this.state.testData}
-          testDetails = {this.state.testDetails}
-          subject = {this.state.showTable.subject}
-          subs = {this.state.subjects.subjects}
-          fileName = {this.state.fileName}/>
+            <ExportCSV
+              csvData={this.state.testData}
+              testDetails={this.state.testDetails}
+              subject={this.state.showTable.subject}
+              subs={this.state.subjects.subjects}
+              fileName={this.state.fileName}
+            />
+          </div>
         </div>
       </div>
     );

@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import tnpbase from "../api/tnpbase";
 import ErrorDisplay from './ui_utils/ErrorDisplay';
+import { ExportCSVJson } from "./ExportCSV";
 
 
 class Page extends React.Component {
@@ -21,7 +22,8 @@ class Page extends React.Component {
     loading: false,
     error: "",
     message: "",
-    submitted: false
+    submitted: false,
+    fileName: ""
   };
 
   getDriveData = () => {
@@ -375,6 +377,10 @@ class Page extends React.Component {
               </thead>
               <tbody>{this.tableData()}</tbody>
             </table>
+            <div className="ui action input">
+        <input value={this.state.fileName}  placeholder="Name" onChange={e => this.setState({fileName: e.target.value})} />
+        <ExportCSVJson csvData = {this.state.studentDetails} fileName = {this.state.fileName || 'StudentPerformance'} />
+        </div>
           </div>
         </div>
       </div>

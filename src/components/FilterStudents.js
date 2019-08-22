@@ -14,6 +14,7 @@ import { fetchDrives } from "../actions/";
 import { Field, reduxForm, formValueSelector } from "redux-form";
 import SuccessMessage from "./ui_utils/SuccessMessage";
 import MultiSelect from "./Multiselect/MultiSelect";
+import { ExportCSVJson } from "./ExportCSV";
 
 const data = [
   {
@@ -53,7 +54,8 @@ class FilterStudents extends React.Component {
     submitted: false,
     addToDriveClicked: false,
     specialDrives: [],
-    selectedCompanies: []
+    selectedCompanies: [],
+    fileName : ""
   };
 
   componentDidMount= () => {
@@ -459,6 +461,10 @@ class FilterStudents extends React.Component {
             </tr>
           </tfoot>
         </table>
+        <div className="ui action input">
+        <input value={this.state.fileName}  placeholder="Name" onChange={e => this.setState({fileName: e.target.value})} />
+        <ExportCSVJson csvData = {this.state.filteredStudents} fileName = {this.state.fileName || 'filteredStudents'} />
+        </div>
         <br />
         <br />
       </div>

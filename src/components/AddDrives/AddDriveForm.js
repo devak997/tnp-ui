@@ -4,7 +4,6 @@ import { Field, reduxForm, formValueSelector } from "redux-form";
 import { IconInput, DatePickerNew, CheckBox, Select } from "../ui_utils/";
 import SuccessMessage from "../ui_utils/SuccessMessage";
 import ErrorDisplay from "../ui_utils/ErrorDisplay";
-import { normalize } from "path";
 
 const displayStatus = props => {
   if (props.mySubmitted) {

@@ -117,4 +117,29 @@ export const ExportCSV = props => {
   );
 };
 
+export const ExportCSVJson = props => {
+  let csvData = props.csvData;
+  let fileName = props.fileName;
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+
+  const exportToCSV = (csvData, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(csvData);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
+
+  return (
+    <button
+      className="ui secondary button"
+      onClick={e => exportToCSV(csvData, (fileName || 'reports'))}
+    >
+      ExportCSV
+    </button>
+  );
+};
+
 export default ExportCSV;
