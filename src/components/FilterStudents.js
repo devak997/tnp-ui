@@ -240,12 +240,9 @@ class FilterStudents extends React.Component {
       });
   };
 
-  render() {
-    return (
-      <div className="ui container">
-        <h2 className="ui header center aligned">Filter Students</h2>
-	<
-        <div className="ui form">
+  advancedFilter = () => {
+    return(
+      <div className="ui form">
           <div className="two fields">
             <Field
               name="btechScore"
@@ -377,6 +374,48 @@ class FilterStudents extends React.Component {
             Filter
           </button>
         </div>
+    );
+  } 
+
+  basicFilter = () => {
+    return(
+      <div className="ui form">
+        <div className="two fields">
+        <Field
+              label="Year of Passing"
+              name="yop"
+              type="number"
+              placeholder="YOP"
+              required
+              component={Input}
+            />
+            <Field
+              name="selectedBranches"
+              component={ModifiedMultiSelect}
+              data={data}
+              label="Branch"
+              placeholder="Select Branches"
+            />
+        </div>
+        <button
+            className="ui secondary button"
+            onClick={this.props.handleSubmit(this.submitFilterDetails)}
+          >
+            Filter
+          </button>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className="ui container">
+        <h2 className="ui header center aligned">Filter Students</h2>
+        <div className="ui slider checkbox" onChange = { () => this.setState({basicFilter: !this.state.basicFilter})}>
+          <input type="checkbox" name="filtertype"  checked={this.state.basicFilter} onChange= {() => {}} />
+          <label></label>
+        </div>
+        { this.state.basicFilter ? this.basicFilter() : this.advancedFilter()}
         <table className="ui blue celled structured striped compact table" style={{ display: 'block', overflowX: 'auto',
         whiteSpace: 'nowrap'}}>
           <thead style={{ textAlign: "center" }}>
