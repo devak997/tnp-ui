@@ -106,6 +106,10 @@ class FilterStudents extends React.Component {
     }
   };
 
+  onFilterTypeChange = () => {
+    this.setState({submitted: false,filteredStudents: [], loading: false, error: "",message: "", basicFilter: !this.state.basicFilter});
+  }
+
   displayFilterStatus = () => {
     if (this.state.addToDriveClicked) {
       if (this.state.loading) {
@@ -397,6 +401,9 @@ class FilterStudents extends React.Component {
               placeholder="Select Branches"
             />
         </div>
+        <div className="field" style={{ marginTop: "10px" }}>
+            {this.displayStatus()}
+        </div>
         <button
             className="ui secondary button"
             onClick={this.props.handleSubmit(this.submitFilterDetails)}
@@ -411,9 +418,9 @@ class FilterStudents extends React.Component {
     return (
       <div className="ui container">
         <h2 className="ui header center aligned">Filter Students</h2>
-        <div className="ui slider checkbox" onChange = { () => this.setState({basicFilter: !this.state.basicFilter})}>
-          <input type="checkbox" name="filtertype"  checked={this.state.basicFilter} onChange= {() => {}} />
-          <label></label>
+        <div className="ui slider checkbox" onChange = {this.onFilterTypeChange}>
+          <input type="checkbox" name="filtertype"  checked={!this.state.basicFilter} onChange= {() => {}} />
+    <label>{this.state.basicFilter ? "Basic" : "Advanced"}</label>
         </div>
         { this.state.basicFilter ? this.basicFilter() : this.advancedFilter()}
         <table className="ui blue celled structured striped compact table" style={{ display: 'block', overflowX: 'auto',
