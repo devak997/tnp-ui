@@ -191,6 +191,48 @@ class FilterStudents extends React.Component {
       });
   };
 
+  submitBasicFilterDetails = () => {
+    this.setState({ submitted: true, loading: true });
+    const data = {
+      branch: formValues.selectedBranches,
+      year_of_passing: parseInt(formValues.yop),
+    };
+    tnpbase
+      .post("/students/basic/filter", { data })
+      .then(res => {
+        if (res.status === 200) {
+          if (res.data.result.length === 0) {
+            this.setState({
+              error: res.data.status,
+              message: res.data.error,
+              loading: false
+            });
+          } else if (res.data.result.length !== 0) {
+            this.setState({
+              filteredStudents: res.data.result,
+              message: res.data.status,
+              loading: false,
+              error: ""
+            });
+          }
+        } else {
+          this.setState({
+            error: res.data.status,
+            message: res.data.error,
+            loading: false
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          error: "Unable to filter students!",
+          message: err.message,
+          loading: false
+        });
+      });
+  }
+
   showFilteredStudents = () => {
     return this.state.filteredStudents.map((student, i) => {
       return (
@@ -406,7 +448,7 @@ class FilterStudents extends React.Component {
         </div>
         <button
             className="ui secondary button"
-            onClick={this.props.handleSubmit(this.submitFilterDetails)}
+            onClick={this.props.handleSubmit(this.submitBasicFilterDetails)}
           >
             Filter
           </button>
