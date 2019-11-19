@@ -191,7 +191,7 @@ class FilterStudents extends React.Component {
       });
   };
 
-  submitBasicFilterDetails = () => {
+  submitBasicFilterDetails = (formValues) => {
     this.setState({ submitted: true, loading: true });
     const data = {
       branch: formValues.selectedBranches,
