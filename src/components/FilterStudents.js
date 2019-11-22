@@ -55,7 +55,8 @@ class FilterStudents extends React.Component {
     addToDriveClicked: false,
     specialDrives: [],
     selectedCompanies: [],
-    fileName : ""
+    fileName : "",
+    basicFilter: true
   };
 
   componentDidMount= () => {
@@ -243,6 +244,7 @@ class FilterStudents extends React.Component {
     return (
       <div className="ui container">
         <h2 className="ui header center aligned">Filter Students</h2>
+	<
         <div className="ui form">
           <div className="two fields">
             <Field
