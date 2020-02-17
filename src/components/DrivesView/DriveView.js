@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import tnpbase from "../../api/tnpbase";
 import DriveViewForm from "./DriveViewForm";
+import { change } from 'redux-form;'
 import {
   fetchDrives,
   setEditDriveAction,
@@ -31,7 +32,7 @@ class DriveView extends React.Component {
         .then(res => {
           if (res.status === 200) {
             if (res.data.result.length === 0) {
-              this.setState({drives: res.data.result, viewType: 1});
+              this.setState({ drives: res.data.result, viewType: 1 });
               window.alert("No upcoming drives");
             } else if (res.data.result.length !== 0) {
               this.setState({
@@ -52,7 +53,7 @@ class DriveView extends React.Component {
         .then(res => {
           if (res.status === 200) {
             if (res.data.result.length === 0) {
-              this.setState({drives: res.data.result, viewType: 0});
+              this.setState({ drives: res.data.result, viewType: 0 });
               window.alert("No drives");
             } else if (res.data.result.length !== 0) {
               this.setState({
@@ -106,6 +107,7 @@ class DriveView extends React.Component {
           this.getDrives(year);
           this.props.setAddRoundAction(-1);
           this.props.setEditDriveAction(-1);
+          this.props.dispatch(change('driveViewForm', 'newRound', ''));
         } else {
           window.alert(`Error: ${res.data.status} \n ${res.data.error}`);
         }
