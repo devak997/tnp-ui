@@ -236,7 +236,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <div style={{ backgroundColor: "#1b181a" }}>
+        <div style={{ backgroundColor: "rgba(36,92,1,0.9)" }}>
           <img
             src={logo}
             alt="Logo"
@@ -244,7 +244,7 @@ class App extends React.Component {
               display: "block",
               marginLeft: "auto",
               marginRight: "auto",
-              height: "60px"
+              height: "90px"
             }}
           />
         </div>

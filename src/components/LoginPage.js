@@ -12,15 +12,10 @@ class LoginPage extends React.Component {
       >
         <div className="logincolumn column">
           <h2 className="ui image header">
-            <div className="content">Log-in to your account</div>
+            <div className="content">Please Sign in</div>
           </h2>
           <form className="ui form">
             <div className="ui stacked secondary  segment">
-              <img
-                src={icon}
-                alt="prag"
-                style={{ width: "100px", height: "100px" }}
-              />
               <div className="field">
                 <div className="ui left icon input">
                   <i className="user icon" />

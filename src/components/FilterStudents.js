@@ -465,8 +465,8 @@ class FilterStudents extends React.Component {
     <label>{this.state.basicFilter ? "Basic" : "Advanced"}</label>
         </div>
         { this.state.basicFilter ? this.basicFilter() : this.advancedFilter()}
-        <table className="ui blue celled structured striped compact table" style={{ display: 'block', overflowX: 'auto',
-        whiteSpace: 'nowrap'}}>
+        <table className="ui blue celled structured striped compact table" style={{ display: 'block', overflow: 'auto',
+        whiteSpace: 'nowrap', height: '512px'}}>
           <thead style={{ textAlign: "center" }}>
             <tr>
               <th rowSpan={2}>SNO</th>
